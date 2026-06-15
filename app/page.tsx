@@ -49,7 +49,7 @@ export default function Home() {
       {/* Hero */}
       <section className="relative bg-navy">
         <ParticleBackground />
-        <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[40%_60%] lg:px-8 lg:py-24">
+        <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[32%_68%] lg:px-8 lg:py-24">
           <HeroContent />
 
           <div className="order-first lg:order-last">

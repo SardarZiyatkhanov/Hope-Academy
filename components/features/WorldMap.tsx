@@ -35,7 +35,11 @@ const THEMES = {
 } as const;
 
 // Extra degrees of lng/lat around Baku + destinations kept in view.
-const DEGREE_PADDING = 5;
+const DEGREE_PADDING = 3;
+
+// Antarctica is drawn separately, shrunk toward the bottom-center of the
+// canvas so it stays visible without dominating the map.
+const ANTARCTICA_SCALE = 0.45;
 // Pixel margin between the fitted geography and the canvas edge.
 const PIXEL_PADDING = 16;
 
@@ -154,6 +158,7 @@ export function WorldMap({ routes, height, className, variant = "dark" }: WorldM
     let frameId = 0;
     let cancelled = false;
     let land: GeoJSON.FeatureCollection | null = null;
+    let antarctica: GeoJSON.Feature | null = null;
     const start = performance.now();
 
     const points: [number, number][] = [BAKU_COORDS, ...routes.map((route) => route.to)];
@@ -198,6 +203,23 @@ export function WorldMap({ routes, height, className, variant = "dark" }: WorldM
       baseCtx.strokeStyle = theme.border;
       baseCtx.lineWidth = 0.75;
       baseCtx.stroke();
+
+      if (antarctica) {
+        // Shrink toward the bottom-center so it reads as a small landmass
+        // at the edge of the map instead of a large gray block.
+        baseCtx.save();
+        baseCtx.translate(rect.width / 2, rect.height);
+        baseCtx.scale(ANTARCTICA_SCALE, ANTARCTICA_SCALE);
+        baseCtx.translate(-rect.width / 2, -rect.height);
+        baseCtx.beginPath();
+        path(antarctica);
+        baseCtx.fillStyle = theme.land;
+        baseCtx.fill();
+        baseCtx.strokeStyle = theme.border;
+        baseCtx.lineWidth = 0.75 / ANTARCTICA_SCALE;
+        baseCtx.stroke();
+        baseCtx.restore();
+      }
     };
 
     const resize = () => {
@@ -329,7 +351,9 @@ export function WorldMap({ routes, height, className, variant = "dark" }: WorldM
     import("world-atlas/countries-110m.json").then((module) => {
       if (cancelled) return;
       const topo = module.default as unknown as Topology;
-      land = feature(topo, topo.objects.countries as GeometryCollection) as GeoJSON.FeatureCollection;
+      const countries = feature(topo, topo.objects.countries as GeometryCollection) as GeoJSON.FeatureCollection;
+      antarctica = countries.features.find((f) => f.properties?.name === "Antarctica") ?? null;
+      land = { ...countries, features: countries.features.filter((f) => f.properties?.name !== "Antarctica") };
       drawBase();
       frameId = requestAnimationFrame(draw);
     });
