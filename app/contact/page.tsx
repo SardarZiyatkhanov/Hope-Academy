@@ -2,6 +2,8 @@ import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { ContactForm } from "@/components/features/ContactForm";
+import { WorldMap } from "@/components/features/WorldMap";
+import { DEFAULT_WORLD_ROUTES } from "@/lib/constants";
 
 const CONTACT_INFO = [
   {
@@ -69,11 +71,8 @@ export default function ContactPage() {
               </div>
             ))}
 
-            <div className="flex min-h-[160px] flex-1 items-center justify-center rounded-card bg-navy p-6 text-center">
-              <div className="flex flex-col items-center gap-2 text-white/70">
-                <MapPin size={28} className="text-gold" />
-                <p className="text-sm">Bakı, Azərbaycan</p>
-              </div>
+            <div className="flex-1 overflow-hidden rounded-card border border-gray-100 shadow-sm">
+              <WorldMap routes={DEFAULT_WORLD_ROUTES} height={240} variant="light" />
             </div>
           </div>
 

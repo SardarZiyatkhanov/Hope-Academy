@@ -7,9 +7,27 @@ interface WorldMapProps {
   routes: WorldMapRoute[];
   height?: number;
   className?: string;
+  variant?: "dark" | "light";
 }
 
 type Point = [number, number];
+
+const THEMES = {
+  dark: {
+    background: "bg-navy",
+    gridDot: "rgba(255,255,255,0.06)",
+    routeStroke: "rgba(43, 109, 232, 0.35)",
+    destLabel: "rgba(255,255,255,0.85)",
+    originLabel: "#FFFFFF",
+  },
+  light: {
+    background: "bg-white",
+    gridDot: "rgba(14,36,84,0.05)",
+    routeStroke: "rgba(43, 109, 232, 0.25)",
+    destLabel: "rgba(14,36,84,0.65)",
+    originLabel: "#0E2454",
+  },
+} as const;
 
 function project(coord: Point, bounds: [number, number, number, number], width: number, height: number): Point {
   const [minLng, maxLng, minLat, maxLat] = bounds;
@@ -18,9 +36,10 @@ function project(coord: Point, bounds: [number, number, number, number], width: 
   return [x, y];
 }
 
-export function WorldMap({ routes, height = 200, className }: WorldMapProps) {
+export function WorldMap({ routes, height = 200, className, variant = "dark" }: WorldMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const theme = THEMES[variant];
 
   useEffect(() => {
     const container = containerRef.current;
@@ -63,7 +82,7 @@ export function WorldMap({ routes, height = 200, className }: WorldMapProps) {
       ctx.clearRect(0, 0, w, h);
 
       // background grid of dots
-      ctx.fillStyle = "rgba(255,255,255,0.06)";
+      ctx.fillStyle = theme.gridDot;
       const gap = 20;
       for (let x = gap / 2; x < w; x += gap) {
         for (let y = gap / 2; y < h; y += gap) {
@@ -85,7 +104,7 @@ export function WorldMap({ routes, height = 200, className }: WorldMapProps) {
         ctx.beginPath();
         ctx.moveTo(bx, by);
         ctx.quadraticCurveTo(mx, my, tx, ty);
-        ctx.strokeStyle = "rgba(43, 109, 232, 0.35)";
+        ctx.strokeStyle = theme.routeStroke;
         ctx.lineWidth = 1.5;
         ctx.stroke();
 
@@ -111,7 +130,7 @@ export function WorldMap({ routes, height = 200, className }: WorldMapProps) {
         ctx.fill();
 
         // label
-        ctx.fillStyle = "rgba(255,255,255,0.85)";
+        ctx.fillStyle = theme.destLabel;
         ctx.font = "12px Inter, sans-serif";
         ctx.fillText(route.label, tx + 6, ty - 6);
       });
@@ -128,7 +147,7 @@ export function WorldMap({ routes, height = 200, className }: WorldMapProps) {
       ctx.fillStyle = "#E8A020";
       ctx.fill();
 
-      ctx.fillStyle = "#FFFFFF";
+      ctx.fillStyle = theme.originLabel;
       ctx.font = "600 12px Inter, sans-serif";
       ctx.fillText("Bakı", bx + 8, by - 8);
 
@@ -142,13 +161,13 @@ export function WorldMap({ routes, height = 200, className }: WorldMapProps) {
       cancelAnimationFrame(frameId);
       window.removeEventListener("resize", resize);
     };
-  }, [routes]);
+  }, [routes, theme]);
 
   return (
     <div
       ref={containerRef}
       style={{ height }}
-      className={`relative w-full overflow-hidden rounded-card bg-navy ${className ?? ""}`}
+      className={`relative w-full overflow-hidden rounded-card ${theme.background} ${className ?? ""}`}
     >
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
     </div>
