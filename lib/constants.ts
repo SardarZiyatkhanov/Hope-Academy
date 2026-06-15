@@ -1,5 +1,12 @@
 import { ApplicationDoc, ApplicationStatus, DocumentType, LeadLevel, LeadStatus } from "@/types";
 
+export const NAV_LINKS = [
+  { href: "/", label: "Ana səhifə" },
+  { href: "/about", label: "Haqqımızda" },
+  { href: "/services", label: "Xidmətlər" },
+  { href: "/contact", label: "Əlaqə" },
+];
+
 export const STATUS_LABELS: Record<
   ApplicationStatus,
   { az: string; color: string }

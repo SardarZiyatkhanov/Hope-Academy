@@ -109,6 +109,17 @@ export interface DocumentDoc {
   uploadedAt: Timestamp;
 }
 
+export interface ContactMessageDoc {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  subject?: string;
+  message: string;
+  status: "new" | "read";
+  createdAt: Timestamp;
+}
+
 export interface MessageDoc {
   id: string;
   senderId: string;

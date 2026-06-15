@@ -42,6 +42,12 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    match /contactMessages/{messageId} {
+      allow create: if true;
+      allow read, update: if isStaff();
+      allow delete: if false;
+    }
+
     match /documents/{documentId} {
       allow read: if isSignedIn() && (isOwner(resource.data.studentId) || isStaff());
       allow create: if isSignedIn() && (isOwner(request.resource.data.studentId) || isStaff());

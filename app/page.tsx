@@ -13,6 +13,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
 import { WorldMap } from "@/components/features/WorldMap";
 import { LeadForm } from "@/components/features/LeadForm";
 import { HeroContent } from "@/components/features/HeroContent";
@@ -135,12 +136,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-navy py-8">
-        <div className="mx-auto max-w-7xl px-4 text-center text-sm text-white/60 sm:px-6 lg:px-8">
-          © {new Date().getFullYear()} Hope Academy. Bütün hüquqlar qorunur.
-        </div>
-      </footer>
+      <Footer />
     </main>
   );
 }
