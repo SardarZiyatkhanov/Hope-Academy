@@ -135,7 +135,7 @@ function drawLabel(
   ctx.fillText(text, x, y);
 }
 
-export function WorldMap({ routes, height = 200, className, variant = "dark" }: WorldMapProps) {
+export function WorldMap({ routes, height, className, variant = "dark" }: WorldMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const theme = THEMES[variant];
@@ -344,7 +344,7 @@ export function WorldMap({ routes, height = 200, className, variant = "dark" }: 
   return (
     <div
       ref={containerRef}
-      style={{ height }}
+      style={height !== undefined ? { height } : undefined}
       className={`relative w-full overflow-hidden rounded-card ${theme.background} ${className ?? ""}`}
     >
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />

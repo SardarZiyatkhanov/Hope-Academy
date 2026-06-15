@@ -49,11 +49,11 @@ export default function Home() {
       {/* Hero */}
       <section className="relative bg-navy">
         <ParticleBackground />
-        <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[55%_45%] lg:px-8 lg:py-24">
+        <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[40%_60%] lg:px-8 lg:py-24">
           <HeroContent />
 
           <div className="order-first lg:order-last">
-            <WorldMap routes={DEFAULT_WORLD_ROUTES} height={360} />
+            <WorldMap routes={DEFAULT_WORLD_ROUTES} className="h-[360px] sm:h-[420px] lg:h-[560px]" />
           </div>
         </div>
       </section>
