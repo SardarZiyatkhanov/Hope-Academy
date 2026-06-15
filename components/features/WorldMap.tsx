@@ -1,6 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { geoMercator, geoPath } from "d3-geo";
+import { feature } from "topojson-client";
+import type { Topology, GeometryCollection } from "topojson-specification";
 import { BAKU_COORDS, WorldMapRoute } from "@/lib/constants";
 
 interface WorldMapProps {
@@ -10,31 +13,29 @@ interface WorldMapProps {
   variant?: "dark" | "light";
 }
 
-type Point = [number, number];
-
 const THEMES = {
   dark: {
     background: "bg-navy",
-    gridDot: "rgba(255,255,255,0.06)",
+    land: "rgba(255,255,255,0.06)",
+    border: "rgba(255,255,255,0.10)",
     routeStroke: "rgba(43, 109, 232, 0.35)",
     destLabel: "rgba(255,255,255,0.85)",
     originLabel: "#FFFFFF",
   },
   light: {
     background: "bg-white",
-    gridDot: "rgba(14,36,84,0.05)",
+    land: "rgba(14,36,84,0.05)",
+    border: "rgba(14,36,84,0.12)",
     routeStroke: "rgba(43, 109, 232, 0.25)",
     destLabel: "rgba(14,36,84,0.65)",
     originLabel: "#0E2454",
   },
 } as const;
 
-function project(coord: Point, bounds: [number, number, number, number], width: number, height: number): Point {
-  const [minLng, maxLng, minLat, maxLat] = bounds;
-  const x = ((coord[0] - minLng) / (maxLng - minLng)) * width;
-  const y = height - ((coord[1] - minLat) / (maxLat - minLat)) * height;
-  return [x, y];
-}
+// Extra degrees of lng/lat around Baku + destinations kept in view.
+const DEGREE_PADDING = 5;
+// Pixel margin between the fitted geography and the canvas edge.
+const PIXEL_PADDING = 16;
 
 export function WorldMap({ routes, height = 200, className, variant = "dark" }: WorldMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -49,54 +50,107 @@ export function WorldMap({ routes, height = 200, className, variant = "dark" }: 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let frameId: number;
+    const baseCanvas = document.createElement("canvas");
+    const baseCtx = baseCanvas.getContext("2d");
+
+    let frameId = 0;
+    let cancelled = false;
+    let land: GeoJSON.FeatureCollection | null = null;
     const start = performance.now();
+
+    const points: [number, number][] = [BAKU_COORDS, ...routes.map((route) => route.to)];
+    const lngs = points.map((point) => point[0]);
+    const lats = points.map((point) => point[1]);
+    const minLng = Math.min(...lngs) - DEGREE_PADDING;
+    const maxLng = Math.max(...lngs) + DEGREE_PADDING;
+    const minLat = Math.min(...lats) - DEGREE_PADDING;
+    const maxLat = Math.max(...lats) + DEGREE_PADDING;
+
+    const bounds: GeoJSON.Feature<GeoJSON.Polygon> = {
+      type: "Feature",
+      properties: null,
+      geometry: {
+        type: "Polygon",
+        coordinates: [
+          [
+            [minLng, minLat],
+            [maxLng, minLat],
+            [maxLng, maxLat],
+            [minLng, maxLat],
+            [minLng, minLat],
+          ],
+        ],
+      },
+    };
+
+    const projection = geoMercator();
+    const path = geoPath(projection);
+
+    const drawBase = () => {
+      if (!baseCtx) return;
+      const rect = container.getBoundingClientRect();
+      baseCtx.clearRect(0, 0, rect.width, rect.height);
+      if (!land) return;
+
+      path.context(baseCtx);
+      baseCtx.beginPath();
+      path(land);
+      baseCtx.fillStyle = theme.land;
+      baseCtx.fill();
+      baseCtx.strokeStyle = theme.border;
+      baseCtx.lineWidth = 0.75;
+      baseCtx.stroke();
+    };
 
     const resize = () => {
       const dpr = window.devicePixelRatio || 1;
       const rect = container.getBoundingClientRect();
+
       canvas.width = rect.width * dpr;
       canvas.height = rect.height * dpr;
       canvas.style.width = `${rect.width}px`;
       canvas.style.height = `${rect.height}px`;
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale(dpr, dpr);
+
+      baseCanvas.width = rect.width * dpr;
+      baseCanvas.height = rect.height * dpr;
+      if (baseCtx) {
+        baseCtx.setTransform(1, 0, 0, 1, 0, 0);
+        baseCtx.scale(dpr, dpr);
+      }
+
+      projection.fitExtent(
+        [
+          [PIXEL_PADDING, PIXEL_PADDING],
+          [rect.width - PIXEL_PADDING, rect.height - PIXEL_PADDING],
+        ],
+        bounds
+      );
+
+      drawBase();
     };
     resize();
-
-    const points: Point[] = [BAKU_COORDS, ...routes.map((route) => route.to)];
-    const lngs = points.map((point) => point[0]);
-    const lats = points.map((point) => point[1]);
-    const padding = 5;
-    const bounds: [number, number, number, number] = [
-      Math.min(...lngs) - padding,
-      Math.max(...lngs) + padding,
-      Math.min(...lats) - padding,
-      Math.max(...lats) + padding,
-    ];
 
     const draw = (time: number) => {
       const rect = container.getBoundingClientRect();
       const w = rect.width;
       const h = rect.height;
       ctx.clearRect(0, 0, w, h);
-
-      // background grid of dots
-      ctx.fillStyle = theme.gridDot;
-      const gap = 20;
-      for (let x = gap / 2; x < w; x += gap) {
-        for (let y = gap / 2; y < h; y += gap) {
-          ctx.beginPath();
-          ctx.arc(x, y, 1, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
+      ctx.drawImage(baseCanvas, 0, 0, w, h);
 
       const elapsed = (time - start) / 1000;
-      const [bx, by] = project(BAKU_COORDS, bounds, w, h);
+      const origin = projection(BAKU_COORDS);
+      if (!origin) {
+        frameId = requestAnimationFrame(draw);
+        return;
+      }
+      const [bx, by] = origin;
 
       routes.forEach((route, index) => {
-        const [tx, ty] = project(route.to, bounds, w, h);
+        const dest = projection(route.to);
+        if (!dest) return;
+        const [tx, ty] = dest;
         const mx = (bx + tx) / 2;
         const my = Math.min(by, ty) - h * 0.18;
 
@@ -154,10 +208,20 @@ export function WorldMap({ routes, height = 200, className, variant = "dark" }: 
       frameId = requestAnimationFrame(draw);
     };
 
-    frameId = requestAnimationFrame(draw);
     window.addEventListener("resize", resize);
 
+    // Until the geography data loads, the canvas stays empty so the
+    // container's plain background shows through (no dot-grid flash).
+    import("world-atlas/countries-110m.json").then((module) => {
+      if (cancelled) return;
+      const topo = module.default as unknown as Topology;
+      land = feature(topo, topo.objects.countries as GeometryCollection) as GeoJSON.FeatureCollection;
+      drawBase();
+      frameId = requestAnimationFrame(draw);
+    });
+
     return () => {
+      cancelled = true;
       cancelAnimationFrame(frameId);
       window.removeEventListener("resize", resize);
     };
