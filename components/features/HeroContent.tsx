@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
+import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 
 const STATS = [
-  { value: "1000+", label: "Tələbə" },
-  { value: "35+", label: "Universitet" },
-  { value: "100%", label: "Şəffaflıq" },
+  { value: 1000, suffix: "+", label: "Tələbə" },
+  { value: 35, suffix: "+", label: "Universitet" },
+  { value: 100, suffix: "%", label: "Şəffaflıq" },
 ];
 
 export function HeroContent() {
@@ -41,7 +42,9 @@ export function HeroContent() {
       <div className="flex gap-8 sm:gap-12">
         {STATS.map((stat) => (
           <div key={stat.label}>
-            <p className="text-2xl font-bold text-white sm:text-3xl">{stat.value}</p>
+            <p className="text-2xl font-bold text-white sm:text-3xl">
+              <AnimatedCounter value={stat.value} suffix={stat.suffix} />
+            </p>
             <p className="text-xs text-white/60 sm:text-sm">{stat.label}</p>
           </div>
         ))}

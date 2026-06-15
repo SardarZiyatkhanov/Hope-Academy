@@ -17,6 +17,9 @@ import { Footer } from "@/components/layout/Footer";
 import { WorldMap } from "@/components/features/WorldMap";
 import { LeadForm } from "@/components/features/LeadForm";
 import { HeroContent } from "@/components/features/HeroContent";
+import { ParticleBackground } from "@/components/features/ParticleBackground";
+import { HowItWorksSteps } from "@/components/features/HowItWorksSteps";
+import { Reveal } from "@/components/ui/Reveal";
 import { DEFAULT_WORLD_ROUTES } from "@/lib/constants";
 
 const USP_ITEMS = [
@@ -28,11 +31,11 @@ const USP_ITEMS = [
 ];
 
 const STEPS = [
-  { icon: FileSignature, title: "Müraciət", desc: "Formu doldurun, məsləhətçi sizinlə əlaqə saxlasın" },
-  { icon: FolderCheck, title: "Sənədlər", desc: "Lazımi sənədləri toplayın və yükləyin" },
-  { icon: Send, title: "Universitetə göndəriş", desc: "Sənədləriniz seçdiyiniz universitetə göndərilir" },
-  { icon: GraduationCap, title: "Qəbul", desc: "Universitetdən qəbul məktubunu alırsınız" },
-  { icon: Plane, title: "Viza & Uçuş", desc: "Viza prosesi və yola düşmə dəstəyi" },
+  { icon: <FileSignature size={22} />, title: "Müraciət", desc: "Formu doldurun, məsləhətçi sizinlə əlaqə saxlasın" },
+  { icon: <FolderCheck size={22} />, title: "Sənədlər", desc: "Lazımi sənədləri toplayın və yükləyin" },
+  { icon: <Send size={22} />, title: "Universitetə göndəriş", desc: "Sənədləriniz seçdiyiniz universitetə göndərilir" },
+  { icon: <GraduationCap size={22} />, title: "Qəbul", desc: "Universitetdən qəbul məktubunu alırsınız" },
+  { icon: <Plane size={22} />, title: "Viza & Uçuş", desc: "Viza prosesi və yola düşmə dəstəyi" },
 ];
 
 export default function Home() {
@@ -41,8 +44,9 @@ export default function Home() {
       <Navbar />
 
       {/* Hero */}
-      <section className="bg-navy">
-        <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[55%_45%] lg:px-8 lg:py-24">
+      <section className="relative bg-navy">
+        <ParticleBackground />
+        <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[55%_45%] lg:px-8 lg:py-24">
           <HeroContent />
 
           <div className="order-first lg:order-last">
@@ -65,30 +69,17 @@ export default function Home() {
 
       {/* How it works */}
       <section id="how-it-works" className="bg-light py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Reveal className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-center text-2xl font-semibold text-navy sm:text-3xl">
             Necə işləyir?
           </h2>
-          <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-5">
-            {STEPS.map(({ icon: Icon, title, desc }, index) => (
-              <div key={title} className="relative flex flex-col items-center text-center">
-                {index < STEPS.length - 1 && (
-                  <div className="absolute top-7 left-1/2 hidden h-px w-full bg-gray-200 sm:block" />
-                )}
-                <div className="relative z-10 flex h-14 w-14 items-center justify-center rounded-full bg-white text-blue shadow-sm">
-                  <Icon size={22} />
-                </div>
-                <h3 className="mt-4 text-sm font-semibold text-navy">{title}</h3>
-                <p className="mt-1 text-xs text-gray-500">{desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+          <HowItWorksSteps steps={STEPS} />
+        </Reveal>
       </section>
 
       {/* CTA tiles */}
       <section className="bg-white py-16">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-4 sm:grid-cols-2 sm:px-6 lg:px-8">
+        <Reveal className="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-4 sm:grid-cols-2 sm:px-6 lg:px-8">
           <Link
             href="/login?role=student"
             className="group flex flex-col justify-between gap-4 rounded-card border border-gray-100 bg-light p-8 transition-shadow hover:shadow-md"
@@ -118,12 +109,12 @@ export default function Home() {
               Daxil ol <ArrowRight size={16} />
             </span>
           </Link>
-        </div>
+        </Reveal>
       </section>
 
       {/* Lead form */}
       <section id="apply" className="bg-light py-16">
-        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+        <Reveal className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <div className="rounded-card bg-white p-6 shadow-sm sm:p-10">
             <h2 className="text-2xl font-semibold text-navy sm:text-3xl">Müraciət et</h2>
             <p className="mt-2 text-sm text-gray-500">
@@ -133,7 +124,7 @@ export default function Home() {
               <LeadForm />
             </div>
           </div>
-        </div>
+        </Reveal>
       </section>
 
       <Footer />
