@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { Avatar } from "@/components/ui/Avatar";
+import { NotificationBell } from "@/components/features/NotificationBell";
 
 interface PortalHeaderProps {
   title: string;
@@ -34,6 +35,7 @@ export function PortalHeader({ title }: PortalHeaderProps) {
       </Link>
 
       <div className="flex items-center gap-3">
+        <NotificationBell />
         {profile && (
           <>
             <Avatar name={profile.name} />

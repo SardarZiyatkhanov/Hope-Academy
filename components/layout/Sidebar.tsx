@@ -8,6 +8,7 @@ import {
   Users,
   FileText,
   MessageSquare,
+  Mail,
   UserPlus,
   Settings,
   LucideIcon,
@@ -57,6 +58,12 @@ const NAV_ITEMS: NavItem[] = [
     label: "Lidlər",
     icon: UserPlus,
     isActive: (pathname) => pathname === "/admin/leads",
+  },
+  {
+    href: "/admin/messages",
+    label: "Mesaj qutusu",
+    icon: Mail,
+    isActive: (pathname) => pathname === "/admin/messages",
   },
   {
     href: "/admin/settings",

@@ -44,6 +44,30 @@ const STEPS = [
 export default function Home() {
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "EducationalOrganization",
+            name: "Hope Academy",
+            alternateName: "Hope Academy — Edu and Career Counselling",
+            url: "https://hopeacademy.az",
+            logo: "https://hopeacademy.az/logo.jpg",
+            image: "https://hopeacademy.az/logo.jpg",
+            description: "Bakıdan bütün dünyaya — təhsil məsləhəti və müraciət platforması",
+            address: {
+              "@type": "PostalAddress",
+              streetAddress: "Nizami küçəsi 203",
+              addressLocality: "Bakı",
+              addressCountry: "AZ",
+            },
+            telephone: "+994501234567",
+            email: "info@hopeacademy.az",
+            sameAs: [],
+          }),
+        }}
+      />
       <Navbar />
 
       {/* Hero */}
