@@ -21,6 +21,7 @@ const THEMES = {
     routeStroke: "rgba(43, 109, 232, 0.35)",
     destLabel: "rgba(255,255,255,0.85)",
     originLabel: "#FFFFFF",
+    labelBg: "rgba(14,36,84,0.65)",
   },
   light: {
     background: "bg-white",
@@ -29,6 +30,7 @@ const THEMES = {
     routeStroke: "rgba(43, 109, 232, 0.25)",
     destLabel: "rgba(14,36,84,0.65)",
     originLabel: "#0E2454",
+    labelBg: "rgba(255,255,255,0.75)",
   },
 } as const;
 
@@ -36,6 +38,102 @@ const THEMES = {
 const DEGREE_PADDING = 5;
 // Pixel margin between the fitted geography and the canvas edge.
 const PIXEL_PADDING = 16;
+
+interface LabelRect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+const LABEL_HEIGHT = 14;
+const LABEL_PADDING = 3;
+
+function rectsOverlap(a: LabelRect, b: LabelRect): boolean {
+  return a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y;
+}
+
+function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, radius: number) {
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.arcTo(x + width, y, x + width, y + height, radius);
+  ctx.arcTo(x + width, y + height, x, y + height, radius);
+  ctx.arcTo(x, y + height, x, y, radius);
+  ctx.arcTo(x, y, x + width, y, radius);
+  ctx.closePath();
+}
+
+// Search radii (px) and directions tried, in order, when placing a label.
+// Starting close to the anchor and spiraling outward lets dense clusters of
+// destinations push their labels apart into open space.
+const SEARCH_RADII = [8, 16, 26, 38, 52, 68];
+const SEARCH_DIRECTIONS: [number, number][] = [
+  [1, 0],
+  [1, 1],
+  [0, 1],
+  [-1, 1],
+  [-1, 0],
+  [-1, -1],
+  [0, -1],
+  [1, -1],
+];
+
+// Tries positions in a spiral around the anchor point and picks the first
+// one that stays on-canvas and doesn't collide with already-placed labels.
+function placeLabel(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  anchorX: number,
+  anchorY: number,
+  canvasWidth: number,
+  canvasHeight: number,
+  placed: LabelRect[]
+): { x: number; y: number; rect: LabelRect } {
+  const textWidth = ctx.measureText(text).width;
+
+  const rectFor = (fx: number, fy: number): LabelRect => ({
+    x: fx - LABEL_PADDING,
+    y: fy - LABEL_HEIGHT - LABEL_PADDING,
+    width: textWidth + LABEL_PADDING * 2,
+    height: LABEL_HEIGHT + LABEL_PADDING * 2,
+  });
+
+  let fallback: { x: number; y: number; rect: LabelRect } | null = null;
+
+  for (const radius of SEARCH_RADII) {
+    for (const [dx, dy] of SEARCH_DIRECTIONS) {
+      const centerX = anchorX + dx * radius;
+      const centerY = anchorY + dy * radius;
+      const fx = centerX - textWidth / 2;
+      const fy = centerY + LABEL_HEIGHT / 2;
+      const rect = rectFor(fx, fy);
+      if (!fallback) fallback = { x: fx, y: fy, rect };
+
+      const inBounds = rect.x >= 0 && rect.y >= 0 && rect.x + rect.width <= canvasWidth && rect.y + rect.height <= canvasHeight;
+      if (inBounds && !placed.some((p) => rectsOverlap(rect, p))) {
+        return { x: fx, y: fy, rect };
+      }
+    }
+  }
+
+  return fallback as { x: number; y: number; rect: LabelRect };
+}
+
+function drawLabel(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  rect: LabelRect,
+  background: string,
+  color: string
+) {
+  ctx.fillStyle = background;
+  roundRect(ctx, rect.x, rect.y, rect.width, rect.height, 3);
+  ctx.fill();
+  ctx.fillStyle = color;
+  ctx.fillText(text, x, y);
+}
 
 export function WorldMap({ routes, height = 200, className, variant = "dark" }: WorldMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -148,10 +246,14 @@ export function WorldMap({ routes, height = 200, className, variant = "dark" }: 
       }
       const [bx, by] = origin;
 
-      routes.forEach((route, index) => {
-        const dest = projection(route.to);
-        if (!dest) return;
-        const [tx, ty] = dest;
+      const destinations = routes
+        .map((route, index) => {
+          const dest = projection(route.to);
+          return dest ? { route, index, x: dest[0], y: dest[1] } : null;
+        })
+        .filter((value): value is { route: WorldMapRoute; index: number; x: number; y: number } => value !== null);
+
+      destinations.forEach(({ route, index, x: tx, y: ty }) => {
         const mx = (bx + tx) / 2;
         const my = Math.min(by, ty) - h * 0.18;
 
@@ -183,11 +285,6 @@ export function WorldMap({ routes, height = 200, className, variant = "dark" }: 
         ctx.arc(tx, ty, 3, 0, Math.PI * 2);
         ctx.fillStyle = "#2B6DE8";
         ctx.fill();
-
-        // label
-        ctx.fillStyle = theme.destLabel;
-        ctx.font = "12px Inter, sans-serif";
-        ctx.fillText(route.label, tx + 6, ty - 6);
       });
 
       // Baku origin
@@ -202,9 +299,21 @@ export function WorldMap({ routes, height = 200, className, variant = "dark" }: 
       ctx.fillStyle = "#E8A020";
       ctx.fill();
 
-      ctx.fillStyle = theme.originLabel;
+      // Labels are placed last, with collision avoidance, so a dense
+      // cluster of destinations doesn't end up with overlapping text.
+      const placed: LabelRect[] = [];
+
       ctx.font = "600 12px Inter, sans-serif";
-      ctx.fillText("Bakı", bx + 8, by - 8);
+      const bakuLabel = placeLabel(ctx, "Bakı", bx, by, w, h, placed);
+      placed.push(bakuLabel.rect);
+      drawLabel(ctx, "Bakı", bakuLabel.x, bakuLabel.y, bakuLabel.rect, theme.labelBg, theme.originLabel);
+
+      ctx.font = "12px Inter, sans-serif";
+      destinations.forEach(({ route, x: tx, y: ty }) => {
+        const label = placeLabel(ctx, route.label, tx, ty, w, h, placed);
+        placed.push(label.rect);
+        drawLabel(ctx, route.label, label.x, label.y, label.rect, theme.labelBg, theme.destLabel);
+      });
 
       frameId = requestAnimationFrame(draw);
     };

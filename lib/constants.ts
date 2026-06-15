@@ -98,6 +98,13 @@ export const DEFAULT_WORLD_ROUTES: WorldMapRoute[] = [
   { to: [2.3, 48.9], label: "Paris", progress: 0.6 },
   { to: [18.6, 54.4], label: "Warsaw", progress: 0.5 },
   { to: [4.5, 50.8], label: "Brussels", progress: 0.8 },
+  { to: [14.4, 50.1], label: "Prague", progress: 0.15 },
+  { to: [19.0, 47.5], label: "Budapest", progress: 0.65 },
+  { to: [12.5, 41.9], label: "Rome", progress: 0.4 },
+  { to: [-0.1, 51.5], label: "London", progress: 0.75 },
+  { to: [29.0, 41.0], label: "Istanbul", progress: 0.25 },
+  { to: [55.3, 25.2], label: "Dubai", progress: 0.55 },
+  { to: [31.2, 30.0], label: "Cairo", progress: 0.85 },
 ];
 
 // City coordinates [lng, lat], used to draw routes for applications
