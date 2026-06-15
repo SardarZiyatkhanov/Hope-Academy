@@ -19,6 +19,7 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["var(--font-inter)", "Inter", "sans-serif"],
+        heading: ["var(--font-poppins)", "Poppins", "sans-serif"],
       },
       borderRadius: {
         DEFAULT: "8px",

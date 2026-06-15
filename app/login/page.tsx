@@ -1,27 +1,41 @@
 "use client";
 
 import { FormEvent, Suspense, useState } from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
-import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Spinner } from "@/components/ui/Spinner";
+import { ArrowLeft, CheckCircle2, Eye, EyeOff, GraduationCap, Lock, Mail, ShieldCheck } from "lucide-react";
+import { cn } from "@/lib/cn";
+
+const FEATURES = [
+  "1000+ tələbəyə uğurla dəstək",
+  "35+ tərəfdaş universitet",
+  "100% şəffaf onlayn izləmə paneli",
+];
+
+const FIELD_CLASSES =
+  "w-full rounded-[8px] border border-gray-200 bg-white py-2.5 pl-11 pr-4 text-sm text-navy placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-accent disabled:bg-gray-50 disabled:text-gray-400";
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const role = searchParams.get("role");
+  const isAdmin = role === "admin";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const subtitle =
-    role === "admin" ? "İdarəetmə panelinə giriş" : "Tələbə kabinetinə giriş";
+  const subtitle = isAdmin
+    ? "İdarəetmə panelinizə daxil olun"
+    : "Tələbə kabinetinizə daxil olun";
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -52,58 +66,159 @@ function LoginForm() {
   };
 
   return (
-    <div className="w-full max-w-md rounded-card bg-white p-8 shadow-xl">
-      <div className="flex flex-col items-center gap-2 text-center">
-        <Image
-          src="/logo.jpg"
-          alt="Hope Academy"
-          width={48}
-          height={48}
-          className="rounded-full"
-        />
-        <h1 className="text-xl font-semibold text-navy">Hope Academy</h1>
-        <p className="text-[10px] font-medium uppercase tracking-wide text-gray-400">
-          Edu and Career Counselling
-        </p>
-        <p className="text-sm text-gray-500">{subtitle}</p>
+    <div className="w-full max-w-md">
+      {/* Mobile-only brand lockup (left panel is hidden below lg) */}
+      <div className="mb-8 flex flex-col items-center gap-2 text-center lg:hidden">
+        <Image src="/logo.jpg" alt="Hope Academy" width={56} height={56} className="rounded-full" />
+        <span className="flex flex-col items-center leading-tight">
+          <span className="font-heading text-2xl font-bold text-navy">Hope Academy</span>
+          <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-gray-400">
+            Edu and Career Counselling
+          </span>
+        </span>
       </div>
 
-      <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4">
-        <Input
-          label="E-poçt"
-          type="email"
-          required
-          autoComplete="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          placeholder="email@example.com"
-        />
-        <Input
-          label="Şifrə"
-          type="password"
-          required
-          autoComplete="current-password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          placeholder="••••••••"
-        />
+      <div className="rounded-card border border-gray-100 bg-white p-8 shadow-xl shadow-navy/5 sm:p-10">
+        <div
+          className={cn(
+            "mb-5 flex h-12 w-12 items-center justify-center rounded-full",
+            isAdmin ? "bg-navy/10 text-navy" : "bg-blue/10 text-blue"
+          )}
+        >
+          {isAdmin ? <ShieldCheck size={24} /> : <GraduationCap size={24} />}
+        </div>
 
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        <h1 className="font-heading text-2xl font-bold text-navy">Xoş gəlmisiniz</h1>
+        <p className="mt-1 text-sm text-gray-500">{subtitle}</p>
 
-        <Button type="submit" disabled={loading} className="mt-2 w-full">
-          {loading ? <Spinner className="border-white/40 border-t-white" /> : "Daxil ol"}
-        </Button>
-      </form>
+        <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4">
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="email" className="text-sm font-medium text-navy">
+              E-poçt
+            </label>
+            <div className="relative">
+              <Mail
+                size={18}
+                className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"
+              />
+              <input
+                id="email"
+                type="email"
+                required
+                autoComplete="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                placeholder="email@example.com"
+                className={FIELD_CLASSES}
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="password" className="text-sm font-medium text-navy">
+              Şifrə
+            </label>
+            <div className="relative">
+              <Lock
+                size={18}
+                className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"
+              />
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                required
+                autoComplete="current-password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                placeholder="••••••••"
+                className={cn(FIELD_CLASSES, "pr-11")}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((value) => !value)}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 transition-colors hover:text-navy"
+                aria-label={showPassword ? "Şifrəni gizlət" : "Şifrəni göstər"}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+          </div>
+
+          {error && (
+            <p className="rounded-[8px] bg-red-50 px-3 py-2 text-sm text-red-600">{error}</p>
+          )}
+
+          <Button type="submit" disabled={loading} className="mt-2 w-full">
+            {loading ? <Spinner className="border-white/40 border-t-white" /> : "Daxil ol"}
+          </Button>
+        </form>
+      </div>
+
+      <Link
+        href="/"
+        className="mt-6 flex items-center justify-center gap-2 text-sm font-medium text-gray-500 transition-colors hover:text-navy"
+      >
+        <ArrowLeft size={16} />
+        Ana səhifəyə qayıt
+      </Link>
     </div>
   );
 }
 
 export default function LoginPage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-navy p-4">
-      <Suspense fallback={null}>
-        <LoginForm />
-      </Suspense>
+    <main className="flex min-h-screen">
+      {/* Branding panel */}
+      <div className="relative hidden w-1/2 flex-col justify-between overflow-hidden bg-navy p-12 lg:flex">
+        <div
+          className="absolute inset-0 opacity-[0.07]"
+          style={{
+            backgroundImage: "radial-gradient(circle, #ffffff 1px, transparent 1px)",
+            backgroundSize: "28px 28px",
+          }}
+        />
+        <div className="absolute -top-32 -right-32 h-96 w-96 rounded-full bg-blue/20 blur-3xl" />
+        <div className="absolute -bottom-32 -left-20 h-96 w-96 rounded-full bg-gold/10 blur-3xl" />
+
+        <Link href="/" className="relative z-10 flex items-center gap-3">
+          <Image src="/logo.jpg" alt="Hope Academy" width={48} height={48} className="rounded-full" />
+          <span className="flex flex-col leading-tight">
+            <span className="font-heading text-xl font-bold text-white">Hope Academy</span>
+            <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-white/50">
+              Edu and Career Counselling
+            </span>
+          </span>
+        </Link>
+
+        <div className="relative z-10">
+          <h2 className="font-heading max-w-md text-4xl font-bold leading-tight text-white">
+            Bakıdan bütün dünyaya təhsil səyahətiniz
+          </h2>
+          <p className="mt-4 max-w-sm text-sm text-white/60">
+            Universitet seçimi, sənədlərin hazırlanması, müraciət və viza prosesində etibarlı
+            tərəfdaşınız.
+          </p>
+          <ul className="mt-8 flex flex-col gap-3">
+            {FEATURES.map((feature) => (
+              <li key={feature} className="flex items-center gap-3 text-sm text-white/80">
+                <CheckCircle2 size={18} className="shrink-0 text-gold" />
+                {feature}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <p className="relative z-10 text-xs text-white/40">
+          © {new Date().getFullYear()} Hope Academy. Bütün hüquqlar qorunur.
+        </p>
+      </div>
+
+      {/* Form panel */}
+      <div className="flex w-full flex-col items-center justify-center bg-light p-4 py-12 lg:w-1/2 lg:bg-white">
+        <Suspense fallback={null}>
+          <LoginForm />
+        </Suspense>
+      </div>
     </main>
   );
 }
