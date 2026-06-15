@@ -20,7 +20,8 @@ service cloud.firestore {
 
     match /users/{userId} {
       allow read: if isSignedIn() && (request.auth.uid == userId || isStaff());
-      allow create: if isStaff() || (isSignedIn() && request.auth.uid == userId);
+      allow create: if isStaff() ||
+        (isOwner(userId) && request.resource.data.role == "student");
       allow update: if isStaff() || (isSignedIn() && request.auth.uid == userId);
       allow delete: if false;
     }
