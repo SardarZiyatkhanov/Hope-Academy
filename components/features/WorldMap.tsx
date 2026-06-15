@@ -105,6 +105,7 @@ export function WorldMap({ routes, height = 200, className, variant = "dark" }: 
     const resize = () => {
       const dpr = window.devicePixelRatio || 1;
       const rect = container.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
 
       canvas.width = rect.width * dpr;
       canvas.height = rect.height * dpr;
@@ -208,7 +209,11 @@ export function WorldMap({ routes, height = 200, className, variant = "dark" }: 
       frameId = requestAnimationFrame(draw);
     };
 
-    window.addEventListener("resize", resize);
+    // Catches the initial layout pass (when the container's size isn't yet
+    // known on the first synchronous resize() call above) as well as any
+    // later size changes from window resizes or layout shifts.
+    const resizeObserver = new ResizeObserver(() => resize());
+    resizeObserver.observe(container);
 
     // Until the geography data loads, the canvas stays empty so the
     // container's plain background shows through (no dot-grid flash).
@@ -223,7 +228,7 @@ export function WorldMap({ routes, height = 200, className, variant = "dark" }: 
     return () => {
       cancelled = true;
       cancelAnimationFrame(frameId);
-      window.removeEventListener("resize", resize);
+      resizeObserver.disconnect();
     };
   }, [routes, theme]);
 
