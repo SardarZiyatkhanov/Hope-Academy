@@ -24,7 +24,12 @@ export function Navbar() {
             height={36}
             className="rounded-full"
           />
-          <span className="text-lg font-semibold text-white">Hope Academy</span>
+          <span className="flex flex-col leading-tight">
+            <span className="text-lg font-semibold text-white">Hope Academy</span>
+            <span className="text-[10px] font-medium uppercase tracking-wide text-white/50">
+              Edu and Career Counselling
+            </span>
+          </span>
         </Link>
 
         <nav className="hidden items-center gap-1 lg:flex">

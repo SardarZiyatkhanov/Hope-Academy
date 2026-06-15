@@ -62,6 +62,9 @@ function LoginForm() {
           className="rounded-full"
         />
         <h1 className="text-xl font-semibold text-navy">Hope Academy</h1>
+        <p className="text-[10px] font-medium uppercase tracking-wide text-gray-400">
+          Edu and Career Counselling
+        </p>
         <p className="text-sm text-gray-500">{subtitle}</p>
       </div>
 
