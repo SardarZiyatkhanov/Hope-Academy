@@ -23,7 +23,13 @@ export function PortalHeader({ title }: PortalHeaderProps) {
   return (
     <header className="sticky top-0 z-30 flex items-center justify-between border-b border-gray-100 bg-white px-4 py-3 sm:px-6">
       <Link href="/" className="flex items-center gap-2">
-        <Image src="/logo.svg" alt="Hope Academy" width={32} height={32} />
+        <Image
+          src="/logo.jpg"
+          alt="Hope Academy"
+          width={32}
+          height={32}
+          className="rounded-full"
+        />
         <span className="text-base font-semibold text-navy">{title}</span>
       </Link>
 

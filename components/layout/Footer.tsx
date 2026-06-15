@@ -9,7 +9,13 @@ export function Footer() {
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:px-8">
         <div className="flex flex-col gap-4 lg:col-span-2">
           <Link href="/" className="flex items-center gap-2">
-            <Image src="/logo.svg" alt="Hope Academy" width={36} height={36} />
+            <Image
+              src="/logo.jpg"
+              alt="Hope Academy"
+              width={36}
+              height={36}
+              className="rounded-full"
+            />
             <span className="text-lg font-semibold text-white">Hope Academy</span>
           </Link>
           <p className="max-w-sm text-sm text-white/60">

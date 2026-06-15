@@ -54,7 +54,13 @@ function LoginForm() {
   return (
     <div className="w-full max-w-md rounded-card bg-white p-8 shadow-xl">
       <div className="flex flex-col items-center gap-2 text-center">
-        <Image src="/logo.svg" alt="Hope Academy" width={48} height={48} />
+        <Image
+          src="/logo.jpg"
+          alt="Hope Academy"
+          width={48}
+          height={48}
+          className="rounded-full"
+        />
         <h1 className="text-xl font-semibold text-navy">Hope Academy</h1>
         <p className="text-sm text-gray-500">{subtitle}</p>
       </div>
