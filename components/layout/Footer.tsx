@@ -2,10 +2,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { MapPin, Phone, Mail } from "lucide-react";
 import { NAV_LINKS } from "@/lib/constants";
+import { WhatsAppButton } from "@/components/features/WhatsAppButton";
 
 export function Footer() {
   return (
     <footer className="bg-navy">
+      <WhatsAppButton />
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:px-8">
         <div className="flex flex-col gap-4 lg:col-span-2">
           <Link href="/" className="flex items-center gap-2">

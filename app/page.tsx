@@ -19,6 +19,9 @@ import { LeadForm } from "@/components/features/LeadForm";
 import { HeroContent } from "@/components/features/HeroContent";
 import { ParticleBackground } from "@/components/features/ParticleBackground";
 import { HowItWorksSteps } from "@/components/features/HowItWorksSteps";
+import { PartnerUniversities } from "@/components/features/PartnerUniversities";
+import { Testimonials } from "@/components/features/Testimonials";
+import { FAQ } from "@/components/features/FAQ";
 import { Reveal } from "@/components/ui/Reveal";
 import { DEFAULT_WORLD_ROUTES } from "@/lib/constants";
 
@@ -67,6 +70,8 @@ export default function Home() {
         </div>
       </section>
 
+      <PartnerUniversities />
+
       {/* How it works */}
       <section id="how-it-works" className="bg-light py-16">
         <Reveal className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -76,6 +81,8 @@ export default function Home() {
           <HowItWorksSteps steps={STEPS} />
         </Reveal>
       </section>
+
+      <Testimonials />
 
       {/* CTA tiles */}
       <section className="bg-white py-16">
@@ -111,6 +118,8 @@ export default function Home() {
           </Link>
         </Reveal>
       </section>
+
+      <FAQ />
 
       {/* Lead form */}
       <section id="apply" className="bg-light py-16">
