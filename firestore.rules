@@ -1,0 +1,56 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function role() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    function isStaff() {
+      return isSignedIn() && role() in ["manager", "superadmin"];
+    }
+
+    function isOwner(studentId) {
+      return isSignedIn() && request.auth.uid == studentId;
+    }
+
+    match /users/{userId} {
+      allow read: if isSignedIn() && (request.auth.uid == userId || isStaff());
+      allow create: if isStaff() || (isSignedIn() && request.auth.uid == userId);
+      allow update: if isStaff() || (isSignedIn() && request.auth.uid == userId);
+      allow delete: if false;
+    }
+
+    match /universities/{universityId} {
+      allow read: if true;
+      allow write: if isStaff();
+    }
+
+    match /applications/{applicationId} {
+      allow read: if isSignedIn() && (isOwner(resource.data.studentId) || isStaff());
+      allow create, update: if isStaff();
+      allow delete: if false;
+    }
+
+    match /leads/{leadId} {
+      allow create: if true;
+      allow read, update: if isStaff();
+      allow delete: if false;
+    }
+
+    match /documents/{documentId} {
+      allow read: if isSignedIn() && (isOwner(resource.data.studentId) || isStaff());
+      allow create: if isSignedIn() && (isOwner(request.resource.data.studentId) || isStaff());
+      allow update, delete: if isStaff();
+    }
+
+    match /messages/{studentId}/thread/{messageId} {
+      allow read, create, update: if isSignedIn() && (isOwner(studentId) || isStaff());
+      allow delete: if false;
+    }
+  }
+}

@@ -1,0 +1,23 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isStaff() {
+      return isSignedIn() &&
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role
+          in ["manager", "superadmin"];
+    }
+
+    match /documents/{studentId}/{fileName} {
+      allow read, write: if isSignedIn() && (request.auth.uid == studentId || isStaff());
+    }
+
+    match /chat/{studentId}/{fileName} {
+      allow read, write: if isSignedIn() && (request.auth.uid == studentId || isStaff());
+    }
+  }
+}
