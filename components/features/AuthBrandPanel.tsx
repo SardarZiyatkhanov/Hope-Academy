@@ -16,6 +16,16 @@ interface AuthBrandPanelProps {
 export function AuthBrandPanel({ headline, description }: AuthBrandPanelProps) {
   return (
     <div className="relative hidden w-1/2 flex-col justify-between overflow-hidden bg-navy p-12 lg:flex">
+      <video
+        className="absolute inset-0 h-full w-full object-cover opacity-30"
+        autoPlay
+        loop
+        muted
+        playsInline
+      >
+        <source src="/videos/globe-bg.mp4" type="video/mp4" />
+      </video>
+      <div className="absolute inset-0 bg-navy/60" />
       <div
         className="absolute inset-0 opacity-[0.07]"
         style={{
