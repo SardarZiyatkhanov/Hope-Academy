@@ -105,6 +105,8 @@ export const DEFAULT_WORLD_ROUTES: WorldMapRoute[] = [
   { to: [29.0, 41.0], label: "Istanbul", progress: 0.25 },
   { to: [55.3, 25.2], label: "Dubai", progress: 0.55 },
   { to: [31.2, 30.0], label: "Cairo", progress: 0.85 },
+  { to: [-74.0, 40.7], label: "New York", progress: 0.2 },
+  { to: [-79.4, 43.7], label: "Toronto", progress: 0.7 },
 ];
 
 // City coordinates [lng, lat], used to draw routes for applications
