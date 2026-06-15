@@ -5,15 +5,19 @@ import Link from "next/link";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Button } from "@/components/ui/Button";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { TableSkeleton } from "@/components/ui/TableSkeleton";
 import { CreateStudentModal } from "@/components/features/CreateStudentModal";
 import { ApplicationDoc, UserDoc } from "@/types";
 import { STATUS_STEP } from "@/lib/constants";
+import { GraduationCap } from "lucide-react";
 
 export default function AdminStudentsPage() {
   const [students, setStudents] = useState<UserDoc[]>([]);
   const [managers, setManagers] = useState<UserDoc[]>([]);
   const [applications, setApplications] = useState<ApplicationDoc[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const studentsQuery = query(collection(db, "users"), where("role", "==", "student"));
@@ -21,6 +25,7 @@ export default function AdminStudentsPage() {
       setStudents(
         snapshot.docs.map((docSnap) => ({ uid: docSnap.id, ...docSnap.data() } as UserDoc))
       );
+      setLoading(false);
     });
     return unsubscribe;
   }, []);
@@ -86,38 +91,49 @@ export default function AdminStudentsPage() {
             </tr>
           </thead>
           <tbody>
-            {students.map((student) => {
-              const stats = studentStats[student.uid] ?? { count: 0, progress: 0 };
-              return (
-                <tr key={student.uid} className="border-b border-gray-50">
-                  <td className="px-3 py-3 font-medium text-navy">{student.name}</td>
-                  <td className="px-3 py-3 text-gray-600">{student.email}</td>
-                  <td className="px-3 py-3 text-gray-600">
-                    {student.managerId ? managerNames[student.managerId] ?? "—" : "—"}
-                  </td>
-                  <td className="px-3 py-3">{stats.count}</td>
-                  <td className="px-3 py-3">
-                    <div className="h-1.5 w-24 rounded-pill bg-gray-100">
-                      <div
-                        className="h-1.5 rounded-pill bg-blue"
-                        style={{ width: `${stats.progress}%` }}
+            {loading ? (
+              <TableSkeleton cols={6} />
+            ) : (
+              <>
+                {students.map((student) => {
+                  const stats = studentStats[student.uid] ?? { count: 0, progress: 0 };
+                  return (
+                    <tr key={student.uid} className="border-b border-gray-50">
+                      <td className="px-3 py-3 font-medium text-navy">{student.name}</td>
+                      <td className="px-3 py-3 text-gray-600">{student.email}</td>
+                      <td className="px-3 py-3 text-gray-600">
+                        {student.managerId ? managerNames[student.managerId] ?? "—" : "—"}
+                      </td>
+                      <td className="px-3 py-3">{stats.count}</td>
+                      <td className="px-3 py-3">
+                        <div className="h-1.5 w-24 rounded-pill bg-gray-100">
+                          <div
+                            className="h-1.5 rounded-pill bg-blue"
+                            style={{ width: `${stats.progress}%` }}
+                          />
+                        </div>
+                      </td>
+                      <td className="px-3 py-3">
+                        <Link href={`/admin/students/${student.uid}`}>
+                          <Button variant="ghost">Aç</Button>
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })}
+                {students.length === 0 && (
+                  <tr>
+                    <td colSpan={6} className="px-3 py-6">
+                      <EmptyState
+                        icon={GraduationCap}
+                        title="Hələ tələbə yoxdur"
+                        description="Yeni tələbə hesabı yaratmaq üçün aşağıdaki düymədən istifadə edin."
+                        action={<Button onClick={() => setModalOpen(true)}>Yeni tələbə</Button>}
                       />
-                    </div>
-                  </td>
-                  <td className="px-3 py-3">
-                    <Link href={`/admin/students/${student.uid}`}>
-                      <Button variant="ghost">Aç</Button>
-                    </Link>
-                  </td>
-                </tr>
-              );
-            })}
-            {students.length === 0 && (
-              <tr>
-                <td colSpan={6} className="px-3 py-6 text-center text-gray-400">
-                  Hələ tələbə yoxdur
-                </td>
-              </tr>
+                    </td>
+                  </tr>
+                )}
+              </>
             )}
           </tbody>
         </table>

@@ -11,8 +11,11 @@ import { Timeline } from "@/components/features/Timeline";
 import { DocumentList } from "@/components/features/DocumentList";
 import { ChatThread } from "@/components/features/ChatThread";
 import { Spinner } from "@/components/ui/Spinner";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { ApplicationDoc, DocumentDoc } from "@/types";
 import { getRouteForApplication } from "@/lib/constants";
+import { FileSearch } from "lucide-react";
 
 const FINAL_STATUSES = new Set(["accepted", "rejected", "departed"]);
 
@@ -21,6 +24,7 @@ export default function StudentDashboardPage() {
   const [applications, setApplications] = useState<ApplicationDoc[]>([]);
   const [documents, setDocuments] = useState<DocumentDoc[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [appsLoading, setAppsLoading] = useState(true);
 
   useEffect(() => {
     if (!user) return;
@@ -34,6 +38,7 @@ export default function StudentDashboardPage() {
       );
       setApplications(apps);
       setActiveId((current) => current ?? apps[0]?.id ?? null);
+      setAppsLoading(false);
     });
     return unsubscribe;
   }, [user]);
@@ -86,24 +91,36 @@ export default function StudentDashboardPage() {
 
         {/* Block B — summary cards */}
         <section className="mb-6 grid grid-cols-3 gap-4">
-          <SummaryCard label="Aktiv" value={activeCount} />
-          <SummaryCard label="Qəbul" value={acceptedCount} />
-          <SummaryCard label="Cəmi" value={applications.length} />
+          <SummaryCard label="Aktiv" value={activeCount} loading={appsLoading} />
+          <SummaryCard label="Qəbul" value={acceptedCount} loading={appsLoading} />
+          <SummaryCard label="Cəmi" value={applications.length} loading={appsLoading} />
         </section>
 
         {/* Block C — application cards */}
         <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {applications.length === 0 && (
-            <p className="col-span-2 text-sm text-gray-400">Hələ ərizə yoxdur</p>
+          {appsLoading ? (
+            <>
+              <Skeleton className="h-32 w-full" />
+              <Skeleton className="h-32 w-full" />
+            </>
+          ) : applications.length === 0 ? (
+            <div className="col-span-1 rounded-card bg-white sm:col-span-2">
+              <EmptyState
+                icon={FileSearch}
+                title="Hələ ərizə yoxdur"
+                description="Müraciətləriniz hazır olduqda burada görünəcək. Suallarınız varsa, menecerinizlə əlaqə saxlayın."
+              />
+            </div>
+          ) : (
+            applications.map((application) => (
+              <ApplicationCard
+                key={application.id}
+                application={application}
+                active={application.id === activeApplication?.id}
+                onClick={() => setActiveId(application.id)}
+              />
+            ))
           )}
-          {applications.map((application) => (
-            <ApplicationCard
-              key={application.id}
-              application={application}
-              active={application.id === activeApplication?.id}
-              onClick={() => setActiveId(application.id)}
-            />
-          ))}
         </section>
 
         {/* Block D — detailed timeline */}
@@ -138,11 +155,23 @@ export default function StudentDashboardPage() {
   );
 }
 
-function SummaryCard({ label, value }: { label: string; value: number }) {
+function SummaryCard({
+  label,
+  value,
+  loading,
+}: {
+  label: string;
+  value: number;
+  loading?: boolean;
+}) {
   return (
     <div className="rounded-card bg-white p-4 text-center">
-      <p className="text-2xl font-bold text-navy">{value}</p>
-      <p className="text-xs text-gray-500">{label}</p>
+      {loading ? (
+        <Skeleton className="mx-auto h-8 w-10" />
+      ) : (
+        <p className="text-2xl font-bold text-navy">{value}</p>
+      )}
+      <p className="mt-1 text-xs text-gray-500">{label}</p>
     </div>
   );
 }

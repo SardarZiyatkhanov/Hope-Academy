@@ -8,9 +8,25 @@ import { WorldMap } from "@/components/features/WorldMap";
 import { AppStatusSelect } from "@/components/features/AppStatusSelect";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { TableSkeleton } from "@/components/ui/TableSkeleton";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { StatusDistributionChart } from "@/components/features/StatusDistributionChart";
 import { cn } from "@/lib/cn";
 import { ApplicationDoc, ApplicationStatus, UserDoc } from "@/types";
-import { getRouteForApplication } from "@/lib/constants";
+import { APPLICATION_STATUS_ORDER, STATUS_LABELS, getRouteForApplication } from "@/lib/constants";
+import { SearchX } from "lucide-react";
+
+const STATUS_COLOR_HEX: Record<string, string> = {
+  gray: "#9ca3af",
+  blue: "#1a4aa8",
+  purple: "#8b5cf6",
+  amber: "#f59e0b",
+  green: "#16a34a",
+  red: "#ef4444",
+  orange: "#f97316",
+  teal: "#14b8a6",
+};
 
 const PAGE_SIZE = 20;
 
@@ -34,12 +50,14 @@ export default function AdminDashboardPage() {
   const [students, setStudents] = useState<Record<string, UserDoc>>({});
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "applications"), (snapshot) => {
       setApplications(
         snapshot.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() } as ApplicationDoc))
       );
+      setLoading(false);
     });
     return unsubscribe;
   }, []);
@@ -61,6 +79,17 @@ export default function AdminDashboardPage() {
       KPI_DEFS.map((def) => ({
         ...def,
         count: applications.filter((application) => application.status === def.status).length,
+      })),
+    [applications]
+  );
+
+  const statusDistribution = useMemo(
+    () =>
+      APPLICATION_STATUS_ORDER.map((status) => ({
+        key: status,
+        label: STATUS_LABELS[status].az,
+        value: applications.filter((application) => application.status === status).length,
+        color: STATUS_COLOR_HEX[STATUS_LABELS[status].color] ?? "#9ca3af",
       })),
     [applications]
   );
@@ -95,17 +124,34 @@ export default function AdminDashboardPage() {
             <span className={cn("inline-flex rounded-pill px-3 py-1 text-xs font-medium", kpi.color)}>
               {kpi.label}
             </span>
-            <p className="mt-3 text-2xl font-bold text-navy">{kpi.count}</p>
+            {loading ? (
+              <Skeleton className="mt-3 h-8 w-12" />
+            ) : (
+              <p className="mt-3 text-2xl font-bold text-navy">{kpi.count}</p>
+            )}
           </div>
         ))}
       </section>
 
-      <section>
-        <p className="mb-2 text-sm font-medium text-navy">
-          Aktiv tələbə marşrutları · {activeRoutes.length} aktiv ərizə
-        </p>
-        <WorldMap routes={activeRoutes} height={150} />
-      </section>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.4fr_1fr]">
+        <section>
+          <p className="mb-2 text-sm font-medium text-navy">
+            Aktiv tələbə marşrutları · {activeRoutes.length} aktiv ərizə
+          </p>
+          <WorldMap routes={activeRoutes} height={150} />
+        </section>
+
+        <section className="rounded-card bg-white p-4 sm:p-6">
+          <p className="mb-4 text-sm font-medium text-navy">Ərizələrin statusu üzrə bölgüsü</p>
+          {loading ? (
+            <div className="flex h-48 items-center justify-center">
+              <Skeleton className="h-40 w-40 rounded-full" />
+            </div>
+          ) : (
+            <StatusDistributionChart data={statusDistribution} />
+          )}
+        </section>
+      </div>
 
       <section className="rounded-card bg-white p-4 sm:p-6">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
@@ -133,29 +179,43 @@ export default function AdminDashboardPage() {
               </tr>
             </thead>
             <tbody>
-              {pageItems.map((application) => (
-                <tr key={application.id} className="border-b border-gray-50">
-                  <td className="px-3 py-3 font-medium text-navy">
-                    {students[application.studentId]?.name ?? "—"}
-                  </td>
-                  <td className="px-3 py-3">{application.universityName}</td>
-                  <td className="px-3 py-3">{application.universityCountry}</td>
-                  <td className="px-3 py-3">
-                    <AppStatusSelect applicationId={application.id} status={application.status} />
-                  </td>
-                  <td className="px-3 py-3">
-                    <Link href={`/admin/students/${application.studentId}`}>
-                      <Button variant="ghost">Aç</Button>
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-              {pageItems.length === 0 && (
-                <tr>
-                  <td colSpan={5} className="px-3 py-6 text-center text-gray-400">
-                    Nəticə tapılmadı
-                  </td>
-                </tr>
+              {loading ? (
+                <TableSkeleton cols={5} />
+              ) : (
+                <>
+                  {pageItems.map((application) => (
+                    <tr key={application.id} className="border-b border-gray-50">
+                      <td className="px-3 py-3 font-medium text-navy">
+                        {students[application.studentId]?.name ?? "—"}
+                      </td>
+                      <td className="px-3 py-3">{application.universityName}</td>
+                      <td className="px-3 py-3">{application.universityCountry}</td>
+                      <td className="px-3 py-3">
+                        <AppStatusSelect applicationId={application.id} status={application.status} />
+                      </td>
+                      <td className="px-3 py-3">
+                        <Link href={`/admin/students/${application.studentId}`}>
+                          <Button variant="ghost">Aç</Button>
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                  {pageItems.length === 0 && (
+                    <tr>
+                      <td colSpan={5} className="px-3 py-6">
+                        <EmptyState
+                          icon={SearchX}
+                          title="Nəticə tapılmadı"
+                          description={
+                            search.trim()
+                              ? "Axtarış sorğusuna uyğun ərizə tapılmadı. Başqa açar söz cəhd edin."
+                              : "Hələ heç bir ərizə əlavə edilməyib."
+                          }
+                        />
+                      </td>
+                    </tr>
+                  )}
+                </>
               )}
             </tbody>
           </table>

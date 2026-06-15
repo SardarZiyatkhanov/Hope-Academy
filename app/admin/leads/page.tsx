@@ -4,20 +4,25 @@ import { useEffect, useState } from "react";
 import { collection, onSnapshot, orderBy, query, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Button } from "@/components/ui/Button";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { TableSkeleton } from "@/components/ui/TableSkeleton";
 import { LeadStatusSelect } from "@/components/features/LeadStatusSelect";
 import { CreateLeadModal } from "@/components/features/CreateLeadModal";
 import { LEAD_LEVEL_LABELS } from "@/lib/constants";
 import { LeadDoc, UserDoc } from "@/types";
+import { UserPlus } from "lucide-react";
 
 export default function AdminLeadsPage() {
   const [leads, setLeads] = useState<LeadDoc[]>([]);
   const [managers, setManagers] = useState<UserDoc[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const leadsQuery = query(collection(db, "leads"), orderBy("createdAt", "desc"));
     const unsubscribe = onSnapshot(leadsQuery, (snapshot) => {
       setLeads(snapshot.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() } as LeadDoc)));
+      setLoading(false);
     });
     return unsubscribe;
   }, []);
@@ -58,31 +63,44 @@ export default function AdminLeadsPage() {
             </tr>
           </thead>
           <tbody>
-            {leads.map((lead) => (
-              <tr key={lead.id} className="border-b border-gray-50">
-                <td className="px-3 py-3 font-medium text-navy">
-                  {lead.name} {lead.surname}
-                </td>
-                <td className="px-3 py-3 text-gray-600">{lead.phone}</td>
-                <td className="px-3 py-3 text-gray-600">{lead.country}</td>
-                <td className="px-3 py-3 text-gray-600">{LEAD_LEVEL_LABELS[lead.level]}</td>
-                <td className="px-3 py-3">
-                  <LeadStatusSelect leadId={lead.id} status={lead.status} />
-                </td>
-                <td className="px-3 py-3 text-gray-600">
-                  {lead.assignedTo ? managerNames[lead.assignedTo] ?? "—" : "—"}
-                </td>
-                <td className="px-3 py-3 text-gray-600">
-                  {lead.createdAt?.toDate ? lead.createdAt.toDate().toLocaleDateString("az-AZ") : "—"}
-                </td>
-              </tr>
-            ))}
-            {leads.length === 0 && (
-              <tr>
-                <td colSpan={7} className="px-3 py-6 text-center text-gray-400">
-                  Hələ lid yoxdur
-                </td>
-              </tr>
+            {loading ? (
+              <TableSkeleton cols={7} />
+            ) : (
+              <>
+                {leads.map((lead) => (
+                  <tr key={lead.id} className="border-b border-gray-50">
+                    <td className="px-3 py-3 font-medium text-navy">
+                      {lead.name} {lead.surname}
+                    </td>
+                    <td className="px-3 py-3 text-gray-600">{lead.phone}</td>
+                    <td className="px-3 py-3 text-gray-600">{lead.country}</td>
+                    <td className="px-3 py-3 text-gray-600">{LEAD_LEVEL_LABELS[lead.level]}</td>
+                    <td className="px-3 py-3">
+                      <LeadStatusSelect leadId={lead.id} status={lead.status} />
+                    </td>
+                    <td className="px-3 py-3 text-gray-600">
+                      {lead.assignedTo ? managerNames[lead.assignedTo] ?? "—" : "—"}
+                    </td>
+                    <td className="px-3 py-3 text-gray-600">
+                      {lead.createdAt?.toDate
+                        ? lead.createdAt.toDate().toLocaleDateString("az-AZ")
+                        : "—"}
+                    </td>
+                  </tr>
+                ))}
+                {leads.length === 0 && (
+                  <tr>
+                    <td colSpan={7} className="px-3 py-6">
+                      <EmptyState
+                        icon={UserPlus}
+                        title="Hələ lid yoxdur"
+                        description="Yeni potensial tələbə əlavə etmək üçün aşağıdaki düymədən istifadə edin."
+                        action={<Button onClick={() => setModalOpen(true)}>Yeni lid</Button>}
+                      />
+                    </td>
+                  </tr>
+                )}
+              </>
             )}
           </tbody>
         </table>
