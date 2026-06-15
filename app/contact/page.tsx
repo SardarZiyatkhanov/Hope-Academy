@@ -2,8 +2,9 @@ import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { ContactForm } from "@/components/features/ContactForm";
-import { WorldMap } from "@/components/features/WorldMap";
-import { DEFAULT_WORLD_ROUTES } from "@/lib/constants";
+
+const MAP_EMBED_URL =
+  "https://www.openstreetmap.org/export/embed.html?bbox=49.8247%2C40.3665%2C49.8447%2C40.3785&layer=mapnik&marker=40.3725%2C49.8347";
 
 const CONTACT_INFO = [
   {
@@ -71,8 +72,13 @@ export default function ContactPage() {
               </div>
             ))}
 
-            <div className="flex-1 overflow-hidden rounded-card border border-gray-100 shadow-sm">
-              <WorldMap routes={DEFAULT_WORLD_ROUTES} height={240} variant="light" />
+            <div className="min-h-[240px] flex-1 overflow-hidden rounded-card border border-gray-100 shadow-sm">
+              <iframe
+                title="Hope Academy ünvanı xəritədə"
+                src={MAP_EMBED_URL}
+                className="h-full min-h-[240px] w-full border-0"
+                loading="lazy"
+              />
             </div>
           </div>
 
