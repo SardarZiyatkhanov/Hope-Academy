@@ -130,7 +130,7 @@ export default function SuccessStoriesPage() {
       <section className="bg-light py-16 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-10">
-            {STORIES.map((story, index) => (
+            {STORIES.map((story) => (
               <Reveal key={story.name} delay={0.05}>
                 <div className="overflow-hidden rounded-card bg-white shadow-sm ring-1 ring-gray-100">
                   <div className={`h-2 w-full bg-gradient-to-r ${story.gradient}`} />
@@ -163,7 +163,7 @@ export default function SuccessStoriesPage() {
                         </div>
 
                         <blockquote className="mt-4 border-l-2 border-gold pl-4 text-sm italic text-gray-600 sm:text-base">
-                          "{story.quote}"
+                          &ldquo;{story.quote}&rdquo;
                         </blockquote>
 
                         <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
