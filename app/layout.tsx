@@ -4,6 +4,8 @@ import { AuthProvider } from "@/lib/auth-context";
 import { ToastProvider } from "@/components/ui/Toast";
 import { PageTransition } from "@/components/ui/PageTransition";
 import { IntroAnimation } from "@/components/features/IntroAnimation";
+import { ScrollProgress } from "@/components/ui/ScrollProgress";
+import { ScrollToTop } from "@/components/ui/ScrollToTop";
 import "./globals.css";
 
 const inter = Inter({
@@ -46,6 +48,8 @@ export default function RootLayout({
   return (
     <html lang="az">
       <body className={`${inter.variable} ${poppins.variable} antialiased`}>
+        <ScrollProgress />
+        <ScrollToTop />
         <IntroAnimation />
         <AuthProvider>
           <ToastProvider>

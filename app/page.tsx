@@ -26,6 +26,7 @@ import { PartnerUniversities } from "@/components/features/PartnerUniversities";
 import { Testimonials } from "@/components/features/Testimonials";
 import { FAQ } from "@/components/features/FAQ";
 import { Reveal } from "@/components/ui/Reveal";
+import { UniversityFinder } from "@/components/features/UniversityFinder";
 import { DEFAULT_WORLD_ROUTES } from "@/lib/constants";
 
 const USP_ITEMS = [
@@ -191,6 +192,8 @@ export default function Home() {
       <Testimonials />
 
       <FAQ />
+
+      <UniversityFinder />
 
       {/* Lead form */}
       <section id="apply" className="relative overflow-hidden bg-navy py-20 sm:py-28">

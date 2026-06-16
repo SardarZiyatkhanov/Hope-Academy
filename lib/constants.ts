@@ -4,6 +4,9 @@ export const NAV_LINKS = [
   { href: "/", label: "Ana səhifə" },
   { href: "/about", label: "Haqqımızda" },
   { href: "/services", label: "Xidmətlər" },
+  { href: "/countries", label: "Ölkələr" },
+  { href: "/blog", label: "Blog" },
+  { href: "/success-stories", label: "Uğur hekayələri" },
   { href: "/contact", label: "Əlaqə" },
 ];
 
