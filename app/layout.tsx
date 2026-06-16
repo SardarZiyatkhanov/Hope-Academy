@@ -3,6 +3,7 @@ import { Inter, Poppins } from "next/font/google";
 import { AuthProvider } from "@/lib/auth-context";
 import { ToastProvider } from "@/components/ui/Toast";
 import { PageTransition } from "@/components/ui/PageTransition";
+import { IntroAnimation } from "@/components/features/IntroAnimation";
 import "./globals.css";
 
 const inter = Inter({
@@ -45,6 +46,7 @@ export default function RootLayout({
   return (
     <html lang="az">
       <body className={`${inter.variable} ${poppins.variable} antialiased`}>
+        <IntroAnimation />
         <AuthProvider>
           <ToastProvider>
             <PageTransition>{children}</PageTransition>
