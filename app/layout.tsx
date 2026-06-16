@@ -6,6 +6,7 @@ import { PageTransition } from "@/components/ui/PageTransition";
 import { IntroAnimation } from "@/components/features/IntroAnimation";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { ScrollToTop } from "@/components/ui/ScrollToTop";
+import { SocialProofToast } from "@/components/features/SocialProofToast";
 import "./globals.css";
 
 const inter = Inter({
@@ -51,6 +52,7 @@ export default function RootLayout({
         <ScrollProgress />
         <ScrollToTop />
         <IntroAnimation />
+        <SocialProofToast />
         <AuthProvider>
           <ToastProvider>
             <PageTransition>{children}</PageTransition>

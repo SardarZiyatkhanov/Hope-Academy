@@ -6,6 +6,7 @@ import { Footer } from "@/components/layout/Footer";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
 import { COUNTRIES } from "@/lib/countries";
+import { CountryComparison } from "@/components/features/CountryComparison";
 
 export const metadata: Metadata = {
   title: "Ölkələr",
@@ -47,6 +48,8 @@ export default function CountriesPage() {
           </div>
         </div>
       </section>
+
+      <CountryComparison />
 
       <Footer />
     </main>

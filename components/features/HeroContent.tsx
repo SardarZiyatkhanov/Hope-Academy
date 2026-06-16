@@ -1,8 +1,18 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
+
+const DESTINATIONS = [
+  "dünyaya",
+  "Almaniyaya",
+  "Niderlandda",
+  "Çexiyaya",
+  "Belçikaya",
+  "Avstriyaya",
+];
 
 const STATS = [
   { value: 1000, suffix: "+", label: "Tələbə" },
@@ -11,6 +21,15 @@ const STATS = [
 ];
 
 export function HeroContent() {
+  const [destIndex, setDestIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDestIndex((i) => (i + 1) % DESTINATIONS.length);
+    }, 2600);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 24 }}
@@ -30,9 +49,19 @@ export function HeroContent() {
 
       <h1 className="font-heading text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">
         Bakıdan bütün{" "}
-        <span className="bg-gradient-to-r from-gold via-yellow-300 to-gold bg-clip-text text-transparent">
-          dünyaya
-        </span>
+        <br className="hidden sm:block" />
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.span
+            key={destIndex}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -16 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="inline-block bg-gradient-to-r from-gold via-yellow-300 to-gold bg-clip-text text-transparent"
+          >
+            {DESTINATIONS[destIndex]}
+          </motion.span>
+        </AnimatePresence>
       </h1>
 
       <p className="max-w-lg text-base text-white/70 sm:text-lg">
