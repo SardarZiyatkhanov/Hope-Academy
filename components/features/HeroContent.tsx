@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
@@ -29,8 +28,11 @@ export function HeroContent() {
         </span>
       </div>
 
-      <h1 className="text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">
-        Bakıdan bütün dünyaya
+      <h1 className="font-heading text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">
+        Bakıdan bütün{" "}
+        <span className="bg-gradient-to-r from-gold via-yellow-300 to-gold bg-clip-text text-transparent">
+          dünyaya
+        </span>
       </h1>
 
       <p className="max-w-lg text-base text-white/70 sm:text-lg">
@@ -51,9 +53,9 @@ export function HeroContent() {
       </div>
 
       <div className="flex flex-wrap gap-3">
-        <Link href="/login?role=student">
-          <Button variant="primary">Ərizəmi yoxla</Button>
-        </Link>
+        <a href="#apply">
+          <Button variant="primary">Pulsuz məsləhət al</Button>
+        </a>
         <a href="#how-it-works">
           <Button variant="ghost" className="text-white hover:bg-white/10">
             Necə işləyir?

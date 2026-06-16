@@ -11,6 +11,9 @@ import {
   Activity,
   Phone,
   ArrowRight,
+  Compass,
+  FileCheck,
+  Home as HomeIcon,
 } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -39,6 +42,45 @@ const STEPS = [
   { icon: <Send size={22} />, title: "Universitetə göndəriş", desc: "Sənədləriniz seçdiyiniz universitetə göndərilir" },
   { icon: <GraduationCap size={22} />, title: "Qəbul", desc: "Universitetdən qəbul məktubunu alırsınız" },
   { icon: <Plane size={22} />, title: "Viza & Uçuş", desc: "Viza prosesi və yola düşmə dəstəyi" },
+];
+
+const HOME_SERVICES = [
+  {
+    icon: Compass,
+    title: "Universitet seçimi",
+    desc: "Maraqlarınıza və büdcənizə uyğun ən doğru universitet və proqramı birlikdə müəyyənləşdiririk.",
+    gradient: "from-blue to-navy",
+  },
+  {
+    icon: FileCheck,
+    title: "Sənəd hazırlığı",
+    desc: "Diplom, transkript, motivasiya məktubu — bütün sənədləri tələblərə uyğun hazırlayırıq.",
+    gradient: "from-gold to-accent",
+  },
+  {
+    icon: Send,
+    title: "Müraciətin göndərilməsi",
+    desc: "Sənədləri vaxtında və düzgün formatda universitetə çatdırır, prosesi izləyirik.",
+    gradient: "from-accent to-blue",
+  },
+  {
+    icon: GraduationCap,
+    title: "Qəbul & Qeydiyyat",
+    desc: "Qəbul məktubundan sonra qeydiyyat, ödəniş və universitetin bütün tələblərini həll edirik.",
+    gradient: "from-navy to-blue",
+  },
+  {
+    icon: Plane,
+    title: "Viza & Uçuş",
+    desc: "Viza sənədləri, müsahibəyə hazırlıq və uçuş planlaması — hamısında dəstək.",
+    gradient: "from-gold to-navy",
+  },
+  {
+    icon: HomeIcon,
+    title: "Yaşayış dəstəyi",
+    desc: "Yeni şəhərdə yaşayış yeri tapılması və məskunlaşma üçün praktiki məsləhətlər.",
+    gradient: "from-blue to-accent",
+  },
 ];
 
 export default function Home() {
@@ -71,13 +113,12 @@ export default function Home() {
       <Navbar />
 
       {/* Hero */}
-      <section className="relative bg-navy">
+      <section className="relative min-h-[85vh] bg-navy">
         <ParticleBackground />
-        <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[32%_68%] lg:px-8 lg:py-24">
+        <div className="relative z-10 mx-auto grid min-h-[85vh] max-w-7xl items-center gap-10 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:px-8 lg:py-28">
           <HeroContent />
-
           <div className="order-first lg:order-last">
-            <WorldMap routes={DEFAULT_WORLD_ROUTES} className="h-[360px] sm:h-[420px] lg:h-[560px]" />
+            <WorldMap routes={DEFAULT_WORLD_ROUTES} className="h-[320px] sm:h-[400px] lg:h-[520px]" />
           </div>
         </div>
       </section>
@@ -94,12 +135,53 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Services */}
+      <section className="bg-white py-20 sm:py-28">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <Reveal className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
+            <div>
+              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
+                Xidmətlərimiz
+              </span>
+              <h2 className="mt-2 text-2xl font-semibold text-navy sm:text-3xl">
+                Hər addımda yanınızdayıq
+              </h2>
+            </div>
+            <Link
+              href="/services"
+              className="group inline-flex items-center gap-1.5 text-sm font-medium text-blue transition-all hover:gap-3"
+            >
+              Hamısına bax <ArrowRight size={15} />
+            </Link>
+          </Reveal>
+
+          <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {HOME_SERVICES.map(({ icon: Icon, title, desc, gradient }, index) => (
+              <Reveal key={title} delay={(index % 3) * 0.08}>
+                <div className="group h-full rounded-card border border-gray-100 bg-white p-6 transition-all hover:-translate-y-1 hover:shadow-lg">
+                  <div
+                    className={`flex h-12 w-12 items-center justify-center rounded-card bg-gradient-to-br ${gradient} text-white shadow-sm`}
+                  >
+                    <Icon size={22} />
+                  </div>
+                  <h3 className="mt-4 text-base font-semibold text-navy">{title}</h3>
+                  <p className="mt-2 text-sm text-gray-500">{desc}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <PartnerUniversities />
 
       {/* How it works */}
-      <section id="how-it-works" className="bg-light py-16">
+      <section id="how-it-works" className="bg-light py-20 sm:py-28">
         <Reveal className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-center text-2xl font-semibold text-navy sm:text-3xl">
+          <span className="block text-center text-xs font-semibold uppercase tracking-[0.2em] text-gold">
+            Proses
+          </span>
+          <h2 className="mt-2 text-center text-2xl font-semibold text-navy sm:text-3xl">
             Necə işləyir?
           </h2>
           <HowItWorksSteps steps={STEPS} />
@@ -108,54 +190,32 @@ export default function Home() {
 
       <Testimonials />
 
-      {/* CTA tiles */}
-      <section className="bg-white py-16">
-        <Reveal className="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-4 sm:grid-cols-2 sm:px-6 lg:px-8">
-          <Link
-            href="/login?role=student"
-            className="group flex flex-col justify-between gap-4 rounded-card border border-gray-100 bg-light p-8 transition-shadow hover:shadow-md"
-          >
-            <div>
-              <h3 className="text-lg font-semibold text-navy">Ərizəmin statusu</h3>
-              <p className="mt-2 text-sm text-gray-600">
-                Tələbə kabinetinə daxil olun və ərizənizin gedişatını izləyin.
-              </p>
-            </div>
-            <span className="inline-flex items-center gap-2 text-sm font-medium text-blue group-hover:gap-3">
-              Daxil ol <ArrowRight size={16} />
-            </span>
-          </Link>
-
-          <Link
-            href="/login?role=admin"
-            className="group flex flex-col justify-between gap-4 rounded-card border border-gray-100 bg-navy p-8 text-white transition-shadow hover:shadow-md"
-          >
-            <div>
-              <h3 className="text-lg font-semibold">İdarəetmə paneli</h3>
-              <p className="mt-2 text-sm text-white/70">
-                Komanda üzvləri üçün tələbə və ərizə idarəetmə paneli.
-              </p>
-            </div>
-            <span className="inline-flex items-center gap-2 text-sm font-medium text-gold group-hover:gap-3">
-              Daxil ol <ArrowRight size={16} />
-            </span>
-          </Link>
-        </Reveal>
-      </section>
-
       <FAQ />
 
       {/* Lead form */}
-      <section id="apply" className="bg-light py-16">
-        <Reveal className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-          <div className="rounded-card bg-white p-6 shadow-sm sm:p-10">
-            <h2 className="text-2xl font-semibold text-navy sm:text-3xl">Müraciət et</h2>
-            <p className="mt-2 text-sm text-gray-500">
-              Formu doldurun — məsləhətçimiz 24 saat ərzində sizinlə əlaqə saxlayacaq.
-            </p>
-            <div className="mt-8">
-              <LeadForm />
-            </div>
+      <section id="apply" className="relative overflow-hidden bg-navy py-20 sm:py-28">
+        <div className="pointer-events-none absolute -top-40 left-1/2 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-blue/25 blur-[120px]" />
+        <div className="pointer-events-none absolute -bottom-20 right-0 h-64 w-64 rounded-full bg-gold/20 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-20 left-0 h-64 w-64 rounded-full bg-blue/15 blur-3xl" />
+
+        <Reveal className="relative z-10 mx-auto max-w-2xl px-4 text-center sm:px-6 lg:px-8">
+          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
+            Müraciət
+          </span>
+          <h2 className="mt-3 text-3xl font-bold text-white sm:text-4xl">
+            Xaricdə təhsil yolculuğuna{" "}
+            <span className="bg-gradient-to-r from-gold via-yellow-300 to-gold bg-clip-text text-transparent">
+              bu gün başla
+            </span>
+          </h2>
+          <p className="mt-4 text-white/60 sm:text-base">
+            Formu doldurun — məsləhətçimiz 24 saat ərzində sizinlə əlaqə saxlayacaq.
+          </p>
+        </Reveal>
+
+        <Reveal delay={0.12} className="relative z-10 mx-auto mt-10 max-w-xl px-4 sm:px-6 lg:px-8">
+          <div className="rounded-card bg-white p-6 shadow-2xl ring-1 ring-white/10 sm:p-10">
+            <LeadForm />
           </div>
         </Reveal>
       </section>
