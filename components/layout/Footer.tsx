@@ -1,14 +1,14 @@
 import Link from "next/link";
 import Image from "next/image";
 import { MapPin, Phone, Mail } from "lucide-react";
-import { NAV_LINKS } from "@/lib/constants";
+import { NAV_LINKS, RESOURCE_LINKS } from "@/lib/constants";
 import { WhatsAppButton } from "@/components/features/WhatsAppButton";
 
 export function Footer() {
   return (
     <footer className="bg-navy">
       <WhatsAppButton />
-      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:px-8">
+      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:grid-cols-2 sm:px-6 lg:grid-cols-5 lg:px-8">
         <div className="flex flex-col gap-4 lg:col-span-2">
           <Link href="/" className="flex items-center gap-2">
             <Image
@@ -34,6 +34,19 @@ export function Footer() {
         <div className="flex flex-col gap-3">
           <h3 className="text-sm font-semibold text-white">Naviqasiya</h3>
           {NAV_LINKS.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="text-sm text-white/60 transition-colors hover:text-white"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+
+        <div className="flex flex-col gap-3">
+          <h3 className="text-sm font-semibold text-white">Resurslar</h3>
+          {RESOURCE_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
