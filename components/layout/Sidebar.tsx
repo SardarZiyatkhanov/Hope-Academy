@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import {
@@ -79,8 +80,30 @@ export function Sidebar() {
   const view = searchParams.get("view");
 
   return (
-    <aside className="hidden w-[168px] shrink-0 bg-navy sm:flex sm:flex-col">
-      <nav className="flex flex-col gap-1 p-3">
+    <aside
+      className="hidden w-[200px] shrink-0 sm:flex sm:flex-col"
+      style={{ background: "linear-gradient(180deg, #0e2454 0%, #091b43 100%)" }}
+    >
+      {/* Brand */}
+      <div className="flex items-center gap-3 border-b border-white/10 px-4 py-[18px]">
+        <div className="relative">
+          <Image
+            src="/logo.jpg"
+            alt="Hope Academy"
+            width={32}
+            height={32}
+            className="rounded-full ring-2 ring-white/20 ring-offset-1 ring-offset-navy"
+          />
+          <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-navy bg-green-400" />
+        </div>
+        <div className="leading-tight">
+          <p className="text-[13px] font-bold text-white">Hope Academy</p>
+          <p className="text-[10px] text-white/40">Admin Panel</p>
+        </div>
+      </div>
+
+      {/* Nav */}
+      <nav className="flex flex-col gap-0.5 p-2.5 pt-3">
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
           const active = item.isActive(pathname, view);
@@ -89,18 +112,35 @@ export function Sidebar() {
               key={item.label}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 rounded-[8px] px-3 py-2.5 text-sm font-medium transition-colors",
+                "group flex items-center gap-2.5 rounded-[10px] px-2.5 py-2 text-[13px] font-medium transition-all duration-150",
                 active
-                  ? "bg-blue text-white"
-                  : "text-white/70 hover:bg-white/10 hover:text-white"
+                  ? "bg-white/[0.12] text-white shadow-sm"
+                  : "text-white/55 hover:bg-white/[0.07] hover:text-white/90"
               )}
             >
-              <Icon size={18} />
-              {item.label}
+              <span
+                className={cn(
+                  "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg transition-colors duration-150",
+                  active
+                    ? "bg-[#1a4aa8] text-white shadow-md shadow-blue-900/40"
+                    : "text-white/40 group-hover:text-white/70"
+                )}
+              >
+                <Icon size={15} />
+              </span>
+              <span className="flex-1">{item.label}</span>
+              {active && (
+                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-blue-400" />
+              )}
             </Link>
           );
         })}
       </nav>
+
+      {/* Footer spacer */}
+      <div className="mt-auto border-t border-white/10 px-4 py-3">
+        <p className="text-[10px] text-white/25">v1.0 · Hope Academy</p>
+      </div>
     </aside>
   );
 }

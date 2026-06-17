@@ -22,35 +22,37 @@ export function PortalHeader({ title }: PortalHeaderProps) {
   };
 
   return (
-    <header className="sticky top-0 z-30 flex items-center justify-between border-b border-gray-100 bg-white px-4 py-3 sm:px-6">
-      <Link href="/" className="flex items-center gap-2">
+    <header className="sticky top-0 z-30 flex items-center justify-between border-b border-gray-100 bg-white/95 px-4 py-2.5 shadow-sm backdrop-blur-sm sm:px-6">
+      <Link href="/" className="flex items-center gap-2.5">
         <Image
           src="/logo.jpg"
           alt="Hope Academy"
-          width={32}
-          height={32}
-          className="rounded-full"
+          width={30}
+          height={30}
+          className="rounded-full ring-1 ring-gray-200"
         />
-        <span className="text-base font-semibold text-navy">{title}</span>
+        <span className="text-[15px] font-bold text-navy">{title}</span>
       </Link>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
         <NotificationBell />
+
         {profile && (
-          <>
-            <Avatar name={profile.name} />
-            <span className="hidden text-sm font-medium text-navy sm:inline">
+          <div className="flex items-center gap-2 rounded-full border border-gray-100 bg-gray-50 py-1.5 pl-1.5 pr-3 shadow-sm">
+            <Avatar name={profile.name} className="h-7 w-7 text-[11px]" />
+            <span className="hidden text-[13px] font-semibold text-navy sm:inline">
               {profile.name}
             </span>
-          </>
+          </div>
         )}
+
         <button
           type="button"
           onClick={handleLogout}
           aria-label="Çıxış"
-          className="flex h-9 w-9 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-light hover:text-navy"
+          className="flex h-8 w-8 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500"
         >
-          <LogOut size={18} />
+          <LogOut size={16} />
         </button>
       </div>
     </header>
