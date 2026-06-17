@@ -6,7 +6,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="min-h-screen bg-light">
       <PortalHeader title="İdarəetmə paneli" />
-      <div className="mx-auto flex max-w-7xl">
+      <div className="flex">
         <Suspense fallback={<div className="hidden w-[200px] shrink-0 sm:flex" style={{ background: "linear-gradient(180deg, #0e2454 0%, #091b43 100%)" }} />}>
           <Sidebar />
         </Suspense>
