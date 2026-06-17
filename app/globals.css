@@ -2,6 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Leaflet map tiles */
+.leaflet-container {
+  font-family: var(--font-inter), Inter, sans-serif;
+  border-radius: inherit;
+}
+.leaflet-control-attribution {
+  font-size: 10px !important;
+  opacity: 0.6;
+}
+.leaflet-popup-content-wrapper {
+  border-radius: 10px !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12) !important;
+}
+.leaflet-popup-content {
+  font-size: 13px;
+  font-weight: 500;
+  color: #0e2454;
+  margin: 8px 12px !important;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #0e2454;
