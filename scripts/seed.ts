@@ -71,7 +71,7 @@ async function main() {
     name: "Nigar Jabbarova",
     role: "student",
     managerId,
-    phone: "+994501234567",
+    phone: "+994519404303",
     createdAt: serverTimestamp(),
   });
 

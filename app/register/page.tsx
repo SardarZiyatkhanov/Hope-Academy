@@ -172,7 +172,7 @@ export default function RegisterPage() {
                     autoComplete="tel"
                     value={phone}
                     onChange={(event) => setPhone(event.target.value)}
-                    placeholder="+994 50 123 45 67"
+                    placeholder="+994 51 940 43 03"
                     className={FIELD_CLASSES}
                   />
                 </div>

@@ -2,12 +2,12 @@ import { ApplicationDoc, ApplicationStatus, DocumentType, LeadLevel, LeadStatus 
 
 // ─── Contact info (update once, used everywhere) ───
 export const CONTACT = {
-  phone: "+994 50 123 45 67",
-  phoneRaw: "+994501234567",
+  phone: "+994 51 940 43 03",
+  phoneRaw: "+994519404303",
   email: "info@hopeacademy.az",
   address: "Nizami küçəsi 203",
   city: "Bakı, Azərbaycan",
-  whatsapp: "994501234567",
+  whatsapp: "994519404303",
 } as const;
 
 export const NAV_LINKS = [
