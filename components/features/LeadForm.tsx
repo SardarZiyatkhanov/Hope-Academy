@@ -40,6 +40,7 @@ export function LeadForm() {
   const [form, setForm] = useState(INITIAL_FORM);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -53,6 +54,8 @@ export function LeadForm() {
       });
       setSubmitted(true);
       setForm(INITIAL_FORM);
+    } catch {
+      setError("Xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.");
     } finally {
       setSubmitting(false);
     }
@@ -169,6 +172,9 @@ export function LeadForm() {
             value={form.city}
             onChange={(event) => setForm({ ...form, city: event.target.value })}
           />
+          {error && (
+            <p className="sm:col-span-2 rounded-[8px] bg-red-50 px-3 py-2 text-sm text-red-600">{error}</p>
+          )}
           <div className="sm:col-span-2">
             <Button type="submit" disabled={submitting} className="w-full sm:w-auto">
               {submitting ? "Göndərilir..." : "Müraciət göndər"}

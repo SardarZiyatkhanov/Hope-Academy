@@ -31,7 +31,7 @@ import { cn } from "@/lib/cn";
 const FINAL_STATUSES = new Set(["accepted", "rejected", "departed"]);
 
 export default function StudentDashboardPage() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, profile, loading: authLoading } = useAuth();
   const [applications, setApplications] = useState<ApplicationDoc[]>([]);
   const [documents, setDocuments] = useState<DocumentDoc[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -81,7 +81,7 @@ export default function StudentDashboardPage() {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-[15px] font-bold text-white">
-              Xoş gəlmisiniz, {user.displayName?.split(" ")[0] ?? "Tələbə"}!
+              Xoş gəlmisiniz, {profile?.name?.split(" ")[0] ?? user.displayName?.split(" ")[0] ?? "Tələbə"}!
             </p>
             <p className="mt-0.5 text-sm text-white/60">
               Xaricdə təhsil yolunuzu buradan izləyə bilərsiniz.
@@ -176,7 +176,7 @@ export default function StudentDashboardPage() {
                 <EmptyState
                   icon={FileSearch}
                   title="Hələ ərizə yoxdur"
-                  description="Müraciətləriniz hazır olduqda burada görünəcək."
+                  description="Meneceriniz müraciətinizi yaratdıqdan sonra burada görünəcək. Sualınız varsa aşağıdakı mesajlaşma bölməsindən yazın."
                 />
               ) : (
                 applications.map((application) => (

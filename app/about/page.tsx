@@ -197,6 +197,7 @@ export default function AboutPage() {
           </Reveal>
 
           <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {/* TODO: Real team photos and bios needed — current data is illustrative */}
             {TEAM.map((member, index) => (
               <Reveal key={member.name} delay={index * 0.08}>
                 <div className="group relative overflow-hidden rounded-card bg-white shadow-sm ring-1 ring-gray-100 transition-all hover:-translate-y-1 hover:shadow-xl hover:ring-blue/20">

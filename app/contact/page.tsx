@@ -4,6 +4,7 @@ import { Footer } from "@/components/layout/Footer";
 import { ContactForm } from "@/components/features/ContactForm";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
+import { CONTACT } from "@/lib/constants";
 
 const MAP_EMBED_URL =
   "https://www.openstreetmap.org/export/embed.html?bbox=49.8247%2C40.3665%2C49.8447%2C40.3785&layer=mapnik&marker=40.3725%2C49.8347";
@@ -12,19 +13,19 @@ const CONTACT_INFO = [
   {
     icon: MapPin,
     title: "Ünvan",
-    lines: ["Nizami küçəsi 203", "Bakı, Azərbaycan"],
+    lines: [CONTACT.address, CONTACT.city],
     gradient: "from-blue to-navy",
   },
   {
     icon: Phone,
     title: "Telefon",
-    lines: ["+994 50 123 45 67"],
+    lines: [CONTACT.phone],
     gradient: "from-gold to-accent",
   },
   {
     icon: Mail,
     title: "E-poçt",
-    lines: ["info@hopeacademy.az"],
+    lines: [CONTACT.email],
     gradient: "from-accent to-blue",
   },
   {

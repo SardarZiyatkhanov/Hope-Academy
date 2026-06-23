@@ -1,5 +1,15 @@
 import { ApplicationDoc, ApplicationStatus, DocumentType, LeadLevel, LeadStatus } from "@/types";
 
+// ─── Contact info (update once, used everywhere) ───
+export const CONTACT = {
+  phone: "+994 50 123 45 67",
+  phoneRaw: "+994501234567",
+  email: "info@hopeacademy.az",
+  address: "Nizami küçəsi 203",
+  city: "Bakı, Azərbaycan",
+  whatsapp: "994501234567",
+} as const;
+
 export const NAV_LINKS = [
   { href: "/", label: "Ana səhifə" },
   { href: "/about", label: "Haqqımızda" },
@@ -118,21 +128,74 @@ export const DEFAULT_WORLD_ROUTES: WorldMapRoute[] = [
 // City coordinates [lng, lat], used to draw routes for applications
 export const CITY_COORDS: Record<string, [number, number]> = {
   Berlin: [13.4, 52.5],
+  München: [11.58, 48.14],
+  Heidelberg: [8.69, 49.4],
+  Aachen: [6.08, 50.78],
   Amsterdam: [4.9, 52.3],
-  Vienna: [16.4, 48.2],
-  Paris: [2.3, 48.9],
-  Warsaw: [18.6, 54.4],
-  Brussels: [4.5, 50.8],
   Delft: [4.36, 52.01],
-  Praga: [14.4, 50.1],
+  Groningen: [6.57, 53.22],
+  Eindhoven: [5.47, 51.44],
   Prague: [14.4, 50.1],
+  Praga: [14.4, 50.1],
+  Brno: [16.6, 49.2],
+  Brussels: [4.5, 50.8],
+  Leuven: [4.7, 50.88],
+  Ghent: [3.72, 51.05],
+  Paris: [2.3, 48.9],
+  Lyon: [4.83, 45.76],
+  Strasbourg: [7.75, 48.58],
+  Warsaw: [21.01, 52.23],
+  Kraków: [19.94, 50.06],
+  Wrocław: [17.04, 51.1],
+  Vienna: [16.4, 48.2],
+  Graz: [15.44, 47.07],
+  Linz: [14.29, 48.31],
+  Budapest: [19.0, 47.5],
+  Rome: [12.5, 41.9],
+  London: [-0.1, 51.5],
+  Istanbul: [29.0, 41.0],
+  Dubai: [55.3, 25.2],
 };
 
 // Maps university name -> city, so an application can be drawn on the map
 export const UNIVERSITY_CITY: Record<string, string> = {
+  // Germany
   "TU Berlin": "Berlin",
+  "Humboldt Universität Berlin": "Berlin",
+  "FU Berlin": "Berlin",
+  "TU München": "München",
+  "LMU München": "München",
+  "Heidelberg University": "Heidelberg",
+  "RWTH Aachen": "Aachen",
+  // Netherlands
   "TU Delft": "Delft",
-  "Charles University": "Praga",
+  "University of Amsterdam": "Amsterdam",
+  "VU Amsterdam": "Amsterdam",
+  "University of Groningen": "Groningen",
+  "TU Eindhoven": "Eindhoven",
+  // Czech Republic
+  "Charles University": "Prague",
+  "Czech Technical University": "Prague",
+  "Masaryk University": "Brno",
+  // Belgium
+  "KU Leuven": "Leuven",
+  "Ghent University": "Ghent",
+  "Université libre de Bruxelles": "Brussels",
+  "Vrije Universiteit Brussel": "Brussels",
+  // France
+  "Sorbonne University": "Paris",
+  "Sciences Po": "Paris",
+  "Université de Lyon": "Lyon",
+  "Université de Strasbourg": "Strasbourg",
+  // Poland
+  "University of Warsaw": "Warsaw",
+  "Jagiellonian University": "Kraków",
+  "Wrocław University": "Wrocław",
+  // Austria
+  "University of Vienna": "Vienna",
+  "TU Wien": "Vienna",
+  "University of Graz": "Graz",
+  "JKU Linz": "Linz",
 };
 
 export function getRouteForApplication(application: ApplicationDoc): WorldMapRoute | null {

@@ -28,14 +28,14 @@ import { FAQ } from "@/components/features/FAQ";
 import { Reveal } from "@/components/ui/Reveal";
 import { UniversityFinder } from "@/components/features/UniversityFinder";
 import { CostEstimator } from "@/components/features/CostEstimator";
-import { DEFAULT_WORLD_ROUTES } from "@/lib/constants";
+import { DEFAULT_WORLD_ROUTES, CONTACT } from "@/lib/constants";
 
 const USP_ITEMS = [
   { icon: MapPin, text: "Bakı, Azərbaycan" },
   { icon: Clock, text: "24 saat ərzində cavab" },
   { icon: ShieldCheck, text: "100% şəffaf proses" },
   { icon: Activity, text: "Onlayn izləmə paneli" },
-  { icon: Phone, text: "+994 50 123 45 67" },
+  { icon: Phone, text: CONTACT.phone },
 ];
 
 const STEPS = [
@@ -102,12 +102,12 @@ export default function Home() {
             description: "Bakıdan bütün dünyaya — təhsil məsləhəti və müraciət platforması",
             address: {
               "@type": "PostalAddress",
-              streetAddress: "Nizami küçəsi 203",
+              streetAddress: CONTACT.address,
               addressLocality: "Bakı",
               addressCountry: "AZ",
             },
-            telephone: "+994501234567",
-            email: "info@hopeacademy.az",
+            telephone: CONTACT.phoneRaw,
+            email: CONTACT.email,
             sameAs: [],
           }),
         }}

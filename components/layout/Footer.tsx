@@ -1,14 +1,14 @@
 import Link from "next/link";
 import Image from "next/image";
 import { MapPin, Phone, Mail } from "lucide-react";
-import { NAV_LINKS, RESOURCE_LINKS } from "@/lib/constants";
+import { NAV_LINKS, RESOURCE_LINKS, CONTACT } from "@/lib/constants";
 import { WhatsAppButton } from "@/components/features/WhatsAppButton";
 
 export function Footer() {
   return (
     <footer className="bg-navy">
       <WhatsAppButton />
-      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:grid-cols-2 sm:px-6 lg:grid-cols-5 lg:px-8">
+      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:grid-cols-2 sm:px-6 md:grid-cols-3 lg:grid-cols-5 lg:px-8">
         <div className="flex flex-col gap-4 lg:col-span-2">
           <Link href="/" className="flex items-center gap-2">
             <Image
@@ -61,21 +61,21 @@ export function Footer() {
           <h3 className="text-sm font-semibold text-white">Əlaqə</h3>
           <div className="flex items-start gap-2 text-sm text-white/60">
             <MapPin size={16} className="mt-0.5 shrink-0 text-gold" />
-            <span>Nizami küçəsi 203, Bakı, Azərbaycan</span>
+            <span>{CONTACT.address}, {CONTACT.city}</span>
           </div>
           <a
-            href="tel:+994501234567"
+            href={`tel:${CONTACT.phoneRaw}`}
             className="flex items-center gap-2 text-sm text-white/60 transition-colors hover:text-white"
           >
             <Phone size={16} className="shrink-0 text-gold" />
-            +994 50 123 45 67
+            {CONTACT.phone}
           </a>
           <a
-            href="mailto:info@hopeacademy.az"
+            href={`mailto:${CONTACT.email}`}
             className="flex items-center gap-2 text-sm text-white/60 transition-colors hover:text-white"
           >
             <Mail size={16} className="shrink-0 text-gold" />
-            info@hopeacademy.az
+            {CONTACT.email}
           </a>
         </div>
       </div>

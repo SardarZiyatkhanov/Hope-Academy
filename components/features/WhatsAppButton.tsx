@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { CONTACT } from "@/lib/constants";
 
 export function WhatsAppButton() {
   const [hovered, setHovered] = useState(false);
@@ -34,7 +35,7 @@ export function WhatsAppButton() {
         <span className="absolute inset-0 animate-pulse rounded-full bg-[#25D366] opacity-30" />
 
         <motion.a
-          href="https://wa.me/994501234567"
+          href={`https://wa.me/${CONTACT.whatsapp}`}
           target="_blank"
           rel="noopener noreferrer"
           aria-label="WhatsApp ilə yazın"

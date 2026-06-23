@@ -31,6 +31,8 @@ export function ContactForm() {
       });
       showToast("Mesajınız göndərildi! Tezliklə sizinlə əlaqə saxlayacağıq.");
       setForm(INITIAL_FORM);
+    } catch {
+      showToast("Xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.");
     } finally {
       setSubmitting(false);
     }

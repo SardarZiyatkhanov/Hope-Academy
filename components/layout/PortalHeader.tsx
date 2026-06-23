@@ -7,6 +7,7 @@ import { LogOut } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { Avatar } from "@/components/ui/Avatar";
 import { NotificationBell } from "@/components/features/NotificationBell";
+import { MobileAdminNav } from "@/components/layout/Sidebar";
 
 interface PortalHeaderProps {
   title: string;
@@ -35,6 +36,7 @@ export function PortalHeader({ title }: PortalHeaderProps) {
       </Link>
 
       <div className="flex items-center gap-2">
+        <MobileAdminNav />
         <NotificationBell />
 
         {profile && (
