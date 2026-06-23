@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowLeft, Clock, Tag, ArrowRight } from "lucide-react";
 import type { Metadata } from "next";
 import { Navbar } from "@/components/layout/Navbar";
@@ -54,7 +55,21 @@ export default function BlogPostPage({ params }: Props) {
           </h1>
           <p className="mt-4 text-base text-white/60">{post.excerpt}</p>
         </div>
-        <div className="relative z-10 mx-auto mt-10 max-w-3xl border-t border-white/10 px-4 sm:px-6 lg:px-8" />
+
+        {/* Hero image banner */}
+        <div className="relative z-10 mx-auto mt-10 max-w-3xl px-4 sm:px-6 lg:px-8">
+          <div className="relative h-[240px] w-full overflow-hidden rounded-t-xl sm:h-[320px]">
+            <Image
+              src={post.image}
+              alt={post.title}
+              fill
+              sizes="(max-width: 768px) 100vw, 768px"
+              priority
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-navy/50 to-transparent" />
+          </div>
+        </div>
       </section>
 
       {/* Article content */}

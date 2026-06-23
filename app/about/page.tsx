@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import {
   Target,
@@ -120,29 +121,53 @@ export default function AboutPage() {
       <section className="bg-light py-16 sm:py-24">
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
           <Reveal>
-            <div className="h-full rounded-card bg-white p-8 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg">
-              <div className="flex h-12 w-12 items-center justify-center rounded-card bg-gradient-to-br from-blue to-navy text-white">
-                <Target size={24} />
+            <div className="group h-full overflow-hidden rounded-card bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg">
+              <div className="relative h-44 overflow-hidden">
+                <Image
+                  src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=700&q=80"
+                  alt="Komanda"
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent" />
               </div>
-              <h2 className="mt-4 text-xl font-semibold text-navy">Missiyamız</h2>
-              <p className="mt-2 text-sm text-gray-600">
-                Hər bir tələbəyə xaricdə təhsil prosesini sadə, şəffaf və əlçatan etmək.
-                Sənədlərin hazırlanmasından tutmuş viza müsahibəsinə qədər hər mərhələdə
-                etibarlı məsləhət və dəstək təqdim edirik.
-              </p>
+              <div className="p-8 pt-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-card bg-gradient-to-br from-blue to-navy text-white">
+                  <Target size={24} />
+                </div>
+                <h2 className="mt-4 text-xl font-semibold text-navy">Missiyamız</h2>
+                <p className="mt-2 text-sm text-gray-600">
+                  Hər bir tələbəyə xaricdə təhsil prosesini sadə, şəffaf və əlçatan etmək.
+                  Sənədlərin hazırlanmasından tutmuş viza müsahibəsinə qədər hər mərhələdə
+                  etibarlı məsləhət və dəstək təqdim edirik.
+                </p>
+              </div>
             </div>
           </Reveal>
           <Reveal delay={0.1}>
-            <div className="h-full rounded-card bg-white p-8 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg">
-              <div className="flex h-12 w-12 items-center justify-center rounded-card bg-gradient-to-br from-gold to-accent text-white">
-                <Eye size={24} />
+            <div className="group h-full overflow-hidden rounded-card bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg">
+              <div className="relative h-44 overflow-hidden">
+                <Image
+                  src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=700&q=80"
+                  alt="Məzuniyyət"
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent" />
               </div>
-              <h2 className="mt-4 text-xl font-semibold text-navy">Vizyonumuz</h2>
-              <p className="mt-2 text-sm text-gray-600">
-                Azərbaycanlı gənclər üçün xaricdə təhsilin ilk seçim mənbəyi olmaq —
-                tələbələri dünyanın aparıcı universitetləri ilə birləşdirən etibarlı
-                körpü qurmaq.
-              </p>
+              <div className="p-8 pt-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-card bg-gradient-to-br from-gold to-accent text-white">
+                  <Eye size={24} />
+                </div>
+                <h2 className="mt-4 text-xl font-semibold text-navy">Vizyonumuz</h2>
+                <p className="mt-2 text-sm text-gray-600">
+                  Azərbaycanlı gənclər üçün xaricdə təhsilin ilk seçim mənbəyi olmaq —
+                  tələbələri dünyanın aparıcı universitetləri ilə birləşdirən etibarlı
+                  körpü qurmaq.
+                </p>
+              </div>
             </div>
           </Reveal>
         </div>
@@ -177,6 +202,28 @@ export default function AboutPage() {
             ))}
           </div>
         </div>
+      </section>
+
+      {/* Campus banner */}
+      <section className="relative h-56 overflow-hidden sm:h-72">
+        <Image
+          src="https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=1400&q=80"
+          alt="Universitet kampusu"
+          fill
+          className="object-cover"
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-navy/85 via-navy/60 to-transparent" />
+        <Reveal className="relative z-10 mx-auto flex h-full max-w-7xl items-center px-4 sm:px-6 lg:px-8">
+          <div>
+            <p className="text-2xl font-bold text-white sm:text-3xl">
+              Avropanın ən yaxşı kampusları <span className="text-gold">səni gözləyir</span>
+            </p>
+            <p className="mt-2 max-w-md text-sm text-white/70">
+              Almaniyadan Avstriyaya, Niderlanddan Çexiyaya — hər ölkədə etibarlı tərəfdaşlarımız var.
+            </p>
+          </div>
+        </Reveal>
       </section>
 
       {/* Team */}

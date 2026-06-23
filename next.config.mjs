@@ -24,7 +24,7 @@ const nextConfig = {
               "script-src 'self' 'unsafe-inline' https://*.firebaseio.com https://*.googleapis.com",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com",
               "font-src 'self' https://fonts.gstatic.com",
-              "img-src 'self' data: blob: https://*.googleapis.com https://*.googleusercontent.com https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://unpkg.com",
+              "img-src 'self' data: blob: https://*.googleapis.com https://*.googleusercontent.com https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://unpkg.com https://images.unsplash.com https://images.pexels.com",
               "connect-src 'self' https://*.firebaseio.com https://*.googleapis.com wss://*.firebaseio.com https://*.cloudfunctions.net https://firestore.googleapis.com https://identitytoolkit.googleapis.com",
               "frame-src 'self' https://www.openstreetmap.org",
               "frame-ancestors 'none'",
@@ -41,6 +41,12 @@ const nextConfig = {
         ],
       },
     ];
+  },
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "images.unsplash.com" },
+      { protocol: "https", hostname: "images.pexels.com" },
+    ],
   },
   poweredByHeader: false,
 };

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import {
   FileSignature,
@@ -52,36 +53,42 @@ const HOME_SERVICES = [
     title: "Universitet seçimi",
     desc: "Maraqlarınıza və büdcənizə uyğun ən doğru universitet və proqramı birlikdə müəyyənləşdiririk.",
     gradient: "from-blue to-navy",
+    image: "https://images.unsplash.com/photo-1562774053-701939374585?w=600&q=80",
   },
   {
     icon: FileCheck,
     title: "Sənəd hazırlığı",
     desc: "Diplom, transkript, motivasiya məktubu — bütün sənədləri tələblərə uyğun hazırlayırıq.",
     gradient: "from-gold to-accent",
+    image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&q=80",
   },
   {
     icon: Send,
     title: "Müraciətin göndərilməsi",
     desc: "Sənədləri vaxtında və düzgün formatda universitetə çatdırır, prosesi izləyirik.",
     gradient: "from-accent to-blue",
+    image: "https://images.unsplash.com/photo-1596526131083-e8c633c948d2?w=600&q=80",
   },
   {
     icon: GraduationCap,
     title: "Qəbul & Qeydiyyat",
     desc: "Qəbul məktubundan sonra qeydiyyat, ödəniş və universitetin bütün tələblərini həll edirik.",
     gradient: "from-navy to-blue",
+    image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600&q=80",
   },
   {
     icon: Plane,
     title: "Viza & Uçuş",
     desc: "Viza sənədləri, müsahibəyə hazırlıq və uçuş planlaması — hamısında dəstək.",
     gradient: "from-gold to-navy",
+    image: "https://images.unsplash.com/photo-1436491865332-7a61a109db05?w=600&q=80",
   },
   {
     icon: HomeIcon,
     title: "Yaşayış dəstəyi",
     desc: "Yeni şəhərdə yaşayış yeri tapılması və məskunlaşma üçün praktiki məsləhətlər.",
     gradient: "from-blue to-accent",
+    image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&q=80",
   },
 ];
 
@@ -158,16 +165,28 @@ export default function Home() {
           </Reveal>
 
           <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {HOME_SERVICES.map(({ icon: Icon, title, desc, gradient }, index) => (
+            {HOME_SERVICES.map(({ icon: Icon, title, desc, gradient, image }, index) => (
               <Reveal key={title} delay={(index % 3) * 0.08}>
-                <div className="group h-full rounded-card border border-gray-100 bg-white p-6 transition-all hover:-translate-y-1 hover:shadow-lg">
-                  <div
-                    className={`flex h-12 w-12 items-center justify-center rounded-card bg-gradient-to-br ${gradient} text-white shadow-sm`}
-                  >
-                    <Icon size={22} />
+                <div className="group h-full overflow-hidden rounded-card border border-gray-100 bg-white transition-all hover:-translate-y-1 hover:shadow-lg">
+                  <div className="relative h-36 w-full overflow-hidden">
+                    <Image
+                      src={image}
+                      alt={title}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-white via-white/30 to-transparent" />
+                    <div
+                      className={`absolute bottom-3 left-4 flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br ${gradient} text-white shadow-lg`}
+                    >
+                      <Icon size={20} />
+                    </div>
                   </div>
-                  <h3 className="mt-4 text-base font-semibold text-navy">{title}</h3>
-                  <p className="mt-2 text-sm text-gray-500">{desc}</p>
+                  <div className="p-5 pt-3">
+                    <h3 className="text-base font-semibold text-navy">{title}</h3>
+                    <p className="mt-1.5 text-sm text-gray-500">{desc}</p>
+                  </div>
                 </div>
               </Reveal>
             ))}
@@ -197,6 +216,29 @@ export default function Home() {
       <UniversityFinder />
 
       <CostEstimator />
+
+      {/* Inspirational banner */}
+      <section className="relative h-64 overflow-hidden sm:h-80">
+        <Image
+          src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1400&q=80"
+          alt="Tələbələr"
+          fill
+          className="object-cover"
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-navy/90 via-navy/70 to-navy/40" />
+        <div className="relative z-10 mx-auto flex h-full max-w-7xl items-center px-4 sm:px-6 lg:px-8">
+          <Reveal>
+            <p className="max-w-lg text-2xl font-bold leading-snug text-white sm:text-3xl">
+              1000+ tələbə artıq Avropanın ən yaxşı universitetlərində{" "}
+              <span className="text-gold">oxuyur.</span>
+            </p>
+            <p className="mt-3 max-w-md text-sm text-white/70">
+              Növbəti uğur hekayəsi sizin ola bilər — ilk addımı bu gün atın.
+            </p>
+          </Reveal>
+        </div>
+      </section>
 
       {/* Lead form */}
       <section id="apply" className="relative overflow-hidden bg-navy py-20 sm:py-28">

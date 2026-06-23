@@ -5,6 +5,7 @@ export interface BlogPost {
   category: string;
   readTime: string;
   date: string;
+  image: string;
   content: { heading?: string; body: string }[];
 }
 
@@ -16,6 +17,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: "Bələdçi",
     readTime: "5 dəq",
     date: "2025-01-15",
+    image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600&q=80",
     content: [
       { body: "Xaricdə oxumaq ideyası çoxumuzu həyəcanlandırır, lakin haradan başlayacağını bilməmək çox vaxt insanları duraksadır. Bu məqalədə prosesi 5 sadə addıma bölürük." },
       { heading: "1. Özünüzü tanıyın", body: "Hansı sahəni oxumaq istəyirsiniz? Mühəndislik, tibb, biznes, hüquq, incəsənət? Büdcəniz nədir? Dil bilikləriniz hansı səviyyədədir? Bu suallara cavab vermək doğru ölkə və universitetin seçimini dəfələrlə asanlaşdırır." },
@@ -32,6 +34,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: "Almaniya",
     readTime: "6 dəq",
     date: "2025-02-10",
+    image: "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=600&q=80",
     content: [
       { body: "Almaniya dünyada beynəlxalq tələbələrə pulsuz təhsil imkanı sunan ən böyük ölkələrdən biridir. Dövlət universitetlərinin büdcəsi federal hökumət tərəfindən maliyyələşdirilir, buna görə tədris haqqı mövcud deyil." },
       { heading: "Semestrlük qeydiyyat haqqı", body: "Hər yarımildə ödənilən €150–350 arası qeydiyyat haqqı (Semesterbeitrag) əslində tədris haqqı deyil — ictimai nəqliyyat keçidi, tələbə birliyi üzvlüyü və müxtəlif xidmətlər daxildir." },
@@ -47,6 +50,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: "Faydalı Məlumat",
     readTime: "4 dəq",
     date: "2025-03-05",
+    image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600&q=80",
     content: [
       { body: "IELTS nüfuzlu bir dil sertifikatıdır, lakin onsuz da xaricdə oxumaq mümkündür. Bu məqalədə alternativləri araşdırırıq." },
       { heading: "TOEFL — IELTS-in alternativ", body: "ABŞ qaynağından olan TOEFL imtahanı IELTS-dən fərqli formatdadır. Bir çox Avropa universiteti TOEFL-ü qəbul edir. Əksər universitetlər IELTS 6.5 = TOEFL iBT 90 kimi hesablayır." },
@@ -62,6 +66,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: "Viza",
     readTime: "7 dəq",
     date: "2025-04-20",
+    image: "https://images.unsplash.com/photo-1544717305-2782549b5136?w=600&q=80",
     content: [
       { body: "Tələbə vizası müsahibəsi prosesi ölkədən ölkəyə dəyişir, lakin bir sıra ortaq prinsiplər vardır. Yaxşı hazırlıq şansınızı əhəmiyyətli dərəcədə artırır." },
       { heading: "Əvvəlcədən sənədlərini hazırla", body: "Qəbul məktubu, tədris haqqı ödəniş sübut (varsa), bank hesabı çıxarışı (aylıq €700+ kifayət edəcək qədər), sığorta, yaşayış sübut sənədi (yataqxana, kirayə müqaviləsi) — hamısı tam hazır olmalıdır." },

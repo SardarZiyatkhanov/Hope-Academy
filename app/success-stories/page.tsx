@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, GraduationCap, MapPin, Calendar } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -21,6 +22,7 @@ const STORIES = [
     field: "Beynəlxalq Münasibətlər",
     year: "2023",
     city: "Berlin, Almaniya",
+    cityImage: "https://images.unsplash.com/photo-1560969184-10fe8719e047?w=400&q=80",
     quote:
       "Hər şey bir zəngdən başladı. Sənəd hazırlığından viza müsahibəsinə qədər Hope Academy hər addımda yanımda idi. İndi Berlində Beynəlxalq Münasibətlər oxuyuram — bir il əvvəl bunu yalnız xəyal edirdim.",
     challenge: "Alman dilini sıfırdan öyrənmək və sənədləri DAAD tələblərinə uyğun hazırlamaq.",
@@ -35,6 +37,7 @@ const STORIES = [
     field: "Data Science",
     year: "2023",
     city: "Amsterdam, Niderland",
+    cityImage: "https://images.unsplash.com/photo-1534351590666-13e3e96b5571?w=400&q=80",
     quote:
       "Niderlandda İngilisdilli proqramlar olduğunu bilmirdim. Hope Academy bunu mənə açıq etdi. Cəmi 3 həftəyə sənədlərimi hazırladıq və qəbul məktubunu vaxtında aldım.",
     challenge: "Qısa müddətdə (2 ay) tam sənəd paketi hazırlamaq.",
@@ -49,6 +52,7 @@ const STORIES = [
     field: "Hüquq",
     year: "2024",
     city: "London, Böyük Britaniya",
+    cityImage: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=400&q=80",
     quote:
       "UCL-ə müraciətin bu qədər mürəkkəb olacağını bilmirdim. Motivasiya məktubu, tövsiyə məktubları, müsahibəyə hazırlıq — hamısında dəstək gördüm. İndi xəyalımdakı universitetdə oxuyuram.",
     challenge: "UCL hüquq fakültəsinin çox yüksək qəbul tələbləri (IELTS 7.5, güclü motivasiya məktubu).",
@@ -63,6 +67,7 @@ const STORIES = [
     field: "Tibb",
     year: "2024",
     city: "Praqa, Çexiya",
+    cityImage: "https://images.unsplash.com/photo-1519677100203-a0e668c92439?w=400&q=80",
     quote:
       "Çexiyada pulsuz tibb oxuyacağımı heç düşünməzdim. 1 il Çex dili kursu ilə Charles University Tibb fakültəsinə qəbul oldum. Xərclər İngiltərə ilə müqayisədə 10 qat azdır.",
     challenge: "Tibb üçün Çex dilini B2 səviyyəsinə çatdırmaq — 10 ay intensiv kurs.",
@@ -77,6 +82,7 @@ const STORIES = [
     field: "Biotibbiyyat",
     year: "2024",
     city: "Leuven, Belçika",
+    cityImage: "https://images.unsplash.com/photo-1491557345352-5929e343eb89?w=400&q=80",
     quote:
       "KU Leuven Avropadakı ən yaxşı universitetlər sırasındadır. Belçikada yaşayış xərclərini, KU Leuven-in tədris haqqını, vizasını — hamısını birgə planladıq. Proses çox rahat keçdi.",
     challenge: "Biotibbiyyat proqramı üçün yüksək akademik ortalama (3.8/4.0) və müsahibə tələbi.",
@@ -91,6 +97,7 @@ const STORIES = [
     field: "Kompüter Mühəndisliyi",
     year: "2022",
     city: "Vyana, Avstriya",
+    cityImage: "https://images.unsplash.com/photo-1516550893923-42d28e5677af?w=400&q=80",
     quote:
       "Vyanada yaşamaq — dünya standartlarında şəhər, münasib həyat xərcləri. TU Wien kompüter mühəndisliyi proqramı beynəlxalq tanınır. Hope Academy olmadan bu qədər sürətli proses mümkün olmazdı.",
     challenge: "Alman dilini sıfırdan öyrənmək, eyni zamanda universitetə müraciət etmək.",
@@ -133,7 +140,19 @@ export default function SuccessStoriesPage() {
             {STORIES.map((story) => (
               <Reveal key={story.name} delay={0.05}>
                 <div className="overflow-hidden rounded-card bg-white shadow-sm ring-1 ring-gray-100">
-                  <div className={`h-2 w-full bg-gradient-to-r ${story.gradient}`} />
+                  <div className="flex">
+                    <div className="relative hidden w-36 shrink-0 overflow-hidden sm:block">
+                      <Image
+                        src={story.cityImage}
+                        alt={story.city}
+                        fill
+                        className="object-cover"
+                        sizes="144px"
+                      />
+                      <div className={`absolute inset-0 bg-gradient-to-r ${story.gradient} opacity-40`} />
+                    </div>
+                    <div className="flex-1">
+                  <div className={`h-1.5 w-full bg-gradient-to-r ${story.gradient}`} />
                   <div className="p-6 sm:p-8">
                     <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-8">
                       {/* Avatar */}
@@ -177,6 +196,8 @@ export default function SuccessStoriesPage() {
                           </div>
                         </div>
                       </div>
+                    </div>
+                  </div>
                     </div>
                   </div>
                 </div>

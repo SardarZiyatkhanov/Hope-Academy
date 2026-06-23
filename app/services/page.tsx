@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
   Compass,
   FileCheck,
@@ -137,6 +138,31 @@ export default function ServicesPage() {
         </div>
       </section>
 
+      {/* Inspirational image section */}
+      <Reveal>
+        <section className="relative h-[340px] w-full overflow-hidden sm:h-[420px]">
+          <Image
+            src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1200&q=80"
+            alt="Tələbələr qrupu"
+            fill
+            sizes="100vw"
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0e2454] via-[#0e2454]/60 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col items-center gap-3 px-4 pb-10 text-center sm:pb-14">
+            <p className="text-xs font-semibold uppercase tracking-widest text-[#e8a020]">
+              Hope Academy
+            </p>
+            <h2 className="text-2xl font-bold text-white sm:text-3xl lg:text-4xl">
+              1000+ tələbənin etibarlı seçimi
+            </h2>
+            <p className="max-w-lg text-sm text-white/70 sm:text-base">
+              Bakıdan Avropanın aparıcı universitetlərinə gedən yolda sizin yanınızdayıq.
+            </p>
+          </div>
+        </section>
+      </Reveal>
+
       {/* Process */}
       <section className="bg-light py-16 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -171,28 +197,40 @@ export default function ServicesPage() {
       <section className="bg-white py-16 sm:py-24">
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
           <Reveal>
-            <div className="rounded-card border border-gray-100 p-8">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-card bg-gradient-to-br from-blue to-navy text-white">
-                  <Globe2 size={18} />
+            <div className="relative overflow-hidden rounded-card border border-gray-100 p-8">
+              {/* Background image */}
+              <Image
+                src="https://images.unsplash.com/photo-1519677100203-a0e668c92439?w=800&q=80"
+                alt="Avropa memarlığı"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-white/90" />
+              {/* Content */}
+              <div className="relative z-10">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-card bg-gradient-to-br from-blue to-navy text-white">
+                    <Globe2 size={18} />
+                  </div>
+                  <h2 className="text-xl font-semibold text-navy sm:text-2xl">
+                    İşlədiyimiz ölkələr
+                  </h2>
                 </div>
-                <h2 className="text-xl font-semibold text-navy sm:text-2xl">
-                  İşlədiyimiz ölkələr
-                </h2>
-              </div>
-              <p className="mt-3 text-sm text-gray-500">
-                Avropanın aparıcı universitetləri ilə tərəfdaşlıq edirik və daim yeni
-                ölkələr əlavə edirik.
-              </p>
-              <div className="mt-6 flex flex-wrap gap-2">
-                {COUNTRIES.map((country) => (
-                  <span
-                    key={country}
-                    className="rounded-pill bg-light px-4 py-1.5 text-sm font-medium text-navy transition-colors hover:bg-blue hover:text-white"
-                  >
-                    {country}
-                  </span>
-                ))}
+                <p className="mt-3 text-sm text-gray-500">
+                  Avropanın aparıcı universitetləri ilə tərəfdaşlıq edirik və daim yeni
+                  ölkələr əlavə edirik.
+                </p>
+                <div className="mt-6 flex flex-wrap gap-2">
+                  {COUNTRIES.map((country) => (
+                    <span
+                      key={country}
+                      className="rounded-pill bg-light px-4 py-1.5 text-sm font-medium text-navy transition-colors hover:bg-blue hover:text-white"
+                    >
+                      {country}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
           </Reveal>
