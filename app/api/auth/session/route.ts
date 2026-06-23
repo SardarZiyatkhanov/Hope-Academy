@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     }
 
     const response = NextResponse.json({ ok: true, role });
-    response.headers.append("Set-Cookie", createSessionCookie(role));
+    response.headers.append("Set-Cookie", await createSessionCookie(role));
     return response;
   } catch {
     return NextResponse.json({ error: "Authentication failed" }, { status: 401 });

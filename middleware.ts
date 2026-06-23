@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { verifySessionCookie, COOKIE_NAME } from "@/lib/session";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const token = request.cookies.get(COOKIE_NAME)?.value;
-  const role = token ? verifySessionCookie(token) : null;
+  const role = token ? await verifySessionCookie(token) : null;
   const { pathname } = request.nextUrl;
 
   if (pathname.startsWith("/student") && role !== "student") {
@@ -31,8 +31,6 @@ export function middleware(request: NextRequest) {
 
   return response;
 }
-
-export const runtime = "nodejs";
 
 export const config = {
   matcher: [
