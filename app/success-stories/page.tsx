@@ -142,12 +142,12 @@ export default function SuccessStoriesPage() {
                 <div className="overflow-hidden rounded-card bg-white shadow-sm ring-1 ring-gray-100">
                   <div className="flex">
                     <div className="relative hidden w-36 shrink-0 overflow-hidden sm:block">
-                      <Image
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
                         src={story.cityImage}
                         alt={story.city}
-                        fill
-                        className="object-cover"
-                        sizes="144px"
+                        className="absolute inset-0 h-full w-full object-cover"
+                        loading="lazy"
                       />
                       <div className={`absolute inset-0 bg-gradient-to-r ${story.gradient} opacity-40`} />
                     </div>

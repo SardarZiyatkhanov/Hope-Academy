@@ -59,13 +59,11 @@ export default function BlogPostPage({ params }: Props) {
         {/* Hero image banner */}
         <div className="relative z-10 mx-auto mt-10 max-w-3xl px-4 sm:px-6 lg:px-8">
           <div className="relative h-[240px] w-full overflow-hidden rounded-t-xl sm:h-[320px]">
-            <Image
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src={post.image}
               alt={post.title}
-              fill
-              sizes="(max-width: 768px) 100vw, 768px"
-              priority
-              className="object-cover"
+              className="absolute inset-0 h-full w-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-navy/50 to-transparent" />
           </div>

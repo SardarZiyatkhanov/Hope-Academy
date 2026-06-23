@@ -169,12 +169,12 @@ export default function Home() {
               <Reveal key={title} delay={(index % 3) * 0.08}>
                 <div className="group h-full overflow-hidden rounded-card border border-gray-100 bg-white transition-all hover:-translate-y-1 hover:shadow-lg">
                   <div className="relative h-36 w-full overflow-hidden">
-                    <Image
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
                       src={image}
                       alt={title}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      loading="lazy"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-white via-white/30 to-transparent" />
                     <div
@@ -219,12 +219,12 @@ export default function Home() {
 
       {/* Inspirational banner */}
       <section className="relative h-64 overflow-hidden sm:h-80">
-        <Image
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1400&fit=crop"
           alt="Tələbələr"
-          fill
-          className="object-cover"
-          sizes="100vw"
+          className="absolute inset-0 h-full w-full object-cover"
+          loading="lazy"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-navy/90 via-navy/70 to-navy/40" />
         <div className="relative z-10 mx-auto flex h-full max-w-7xl items-center px-4 sm:px-6 lg:px-8">

@@ -123,12 +123,12 @@ export default function AboutPage() {
           <Reveal>
             <div className="group h-full overflow-hidden rounded-card bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg">
               <div className="relative h-44 overflow-hidden">
-                <Image
-                  src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=700&q=80"
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=700&fit=crop"
                   alt="Komanda"
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent" />
               </div>
@@ -148,12 +148,12 @@ export default function AboutPage() {
           <Reveal delay={0.1}>
             <div className="group h-full overflow-hidden rounded-card bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg">
               <div className="relative h-44 overflow-hidden">
-                <Image
-                  src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=700&q=80"
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=700&fit=crop"
                   alt="Məzuniyyət"
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent" />
               </div>
@@ -206,12 +206,12 @@ export default function AboutPage() {
 
       {/* Campus banner */}
       <section className="relative h-56 overflow-hidden sm:h-72">
-        <Image
-          src="https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=1400&q=80"
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=1400&fit=crop"
           alt="Universitet kampusu"
-          fill
-          className="object-cover"
-          sizes="100vw"
+          className="absolute inset-0 h-full w-full object-cover"
+          loading="lazy"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-navy/85 via-navy/60 to-transparent" />
         <Reveal className="relative z-10 mx-auto flex h-full max-w-7xl items-center px-4 sm:px-6 lg:px-8">
