@@ -17,9 +17,9 @@ import {
 } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { WorldMap } from "@/components/features/WorldMap";
 import { LeadForm } from "@/components/features/LeadForm";
 import { HeroContent } from "@/components/features/HeroContent";
+import { HeroGlobe } from "@/components/features/HeroGlobe";
 import { ParticleBackground } from "@/components/features/ParticleBackground";
 import { HowItWorksSteps } from "@/components/features/HowItWorksSteps";
 import { PartnerUniversities } from "@/components/features/PartnerUniversities";
@@ -28,7 +28,7 @@ import { FAQ } from "@/components/features/FAQ";
 import { Reveal } from "@/components/ui/Reveal";
 import { UniversityFinder } from "@/components/features/UniversityFinder";
 import { CostEstimator } from "@/components/features/CostEstimator";
-import { DEFAULT_WORLD_ROUTES, CONTACT } from "@/lib/constants";
+import { CONTACT } from "@/lib/constants";
 
 const USP_ITEMS = [
   { icon: MapPin, text: "Bakı, Azərbaycan" },
@@ -120,7 +120,7 @@ export default function Home() {
         <div className="relative z-10 mx-auto grid min-h-[85vh] max-w-7xl items-center gap-10 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:px-8 lg:py-28">
           <HeroContent />
           <div className="order-first lg:order-last">
-            <WorldMap routes={DEFAULT_WORLD_ROUTES} variant="dark" className="h-[320px] sm:h-[400px] lg:h-[520px]" />
+            <HeroGlobe className="h-[320px] sm:h-[400px] lg:h-[520px]" />
           </div>
         </div>
       </section>
