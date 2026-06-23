@@ -43,7 +43,12 @@ function LoginForm() {
       const userRole = snap.exists() ? snap.data().role : null;
 
       if (userRole) {
-        document.cookie = `session_role=${userRole}; path=/; max-age=${60 * 60 * 24 * 7}`;
+        const idToken = await credential.user.getIdToken();
+        await fetch("/api/auth/session", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ idToken }),
+        });
       }
 
       if (userRole === "student") {
@@ -100,6 +105,7 @@ function LoginForm() {
                 id="email"
                 type="email"
                 required
+                maxLength={200}
                 autoComplete="email"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
@@ -122,6 +128,7 @@ function LoginForm() {
                 id="password"
                 type={showPassword ? "text" : "password"}
                 required
+                maxLength={128}
                 autoComplete="current-password"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}

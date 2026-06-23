@@ -12,12 +12,38 @@ service firebase.storage {
           in ["manager", "superadmin"];
     }
 
+    function isAllowedType() {
+      return request.resource.contentType.matches('application/pdf')
+          || request.resource.contentType.matches('image/jpeg')
+          || request.resource.contentType.matches('image/png')
+          || request.resource.contentType.matches('application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+    }
+
+    function isUnderSizeLimit() {
+      return request.resource.size <= 10 * 1024 * 1024;
+    }
+
     match /documents/{studentId}/{fileName} {
-      allow read, write: if isSignedIn() && (request.auth.uid == studentId || isStaff());
+      allow read: if isSignedIn() && (request.auth.uid == studentId || isStaff());
+      allow create: if isSignedIn()
+                    && (request.auth.uid == studentId || isStaff())
+                    && isAllowedType()
+                    && isUnderSizeLimit();
+      allow update, delete: if isStaff();
     }
 
     match /chat/{studentId}/{fileName} {
-      allow read, write: if isSignedIn() && (request.auth.uid == studentId || isStaff());
+      allow read: if isSignedIn() && (request.auth.uid == studentId || isStaff());
+      allow create: if isSignedIn()
+                    && (request.auth.uid == studentId || isStaff())
+                    && isAllowedType()
+                    && isUnderSizeLimit();
+      allow update, delete: if isStaff();
+    }
+
+    // Deny everything else
+    match /{allPaths=**} {
+      allow read, write: if false;
     }
   }
 }

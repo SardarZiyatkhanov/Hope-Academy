@@ -14,50 +14,98 @@ service cloud.firestore {
       return isSignedIn() && role() in ["manager", "superadmin"];
     }
 
+    function isSuperadmin() {
+      return isSignedIn() && role() == "superadmin";
+    }
+
     function isOwner(studentId) {
       return isSignedIn() && request.auth.uid == studentId;
     }
 
+    // --- Users ---
     match /users/{userId} {
       allow read: if isSignedIn() && (request.auth.uid == userId || isStaff());
+
       allow create: if isStaff() ||
-        (isOwner(userId) && request.resource.data.role == "student");
-      allow update: if isStaff() || (isSignedIn() && request.auth.uid == userId);
-      allow delete: if false;
+        (isOwner(userId)
+         && request.resource.data.role == "student"
+         && request.resource.data.keys().hasAll(["uid", "email", "name", "role", "createdAt"]));
+
+      // Students can ONLY update their own name and phone — never role or email
+      allow update: if isStaff() ||
+        (isOwner(userId)
+         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["name", "phone"])
+         && request.resource.data.role == resource.data.role);
+
+      allow delete: if isSuperadmin();
     }
 
+    // --- Universities ---
     match /universities/{universityId} {
-      allow read: if true;
-      allow write: if isStaff();
+      allow read: if isSignedIn();
+      allow write: if isSuperadmin();
     }
 
+    // --- Applications ---
     match /applications/{applicationId} {
       allow read: if isSignedIn() && (isOwner(resource.data.studentId) || isStaff());
       allow create, update: if isStaff();
-      allow delete: if false;
+      allow delete: if isSuperadmin();
     }
 
+    // --- Leads (public create, staff manage) ---
     match /leads/{leadId} {
-      allow create: if true;
+      allow create: if request.resource.data.status == "new"
+                    && request.resource.data.keys().hasAll(["name", "surname", "phone", "email", "status", "createdAt"])
+                    && request.resource.data.name is string
+                    && request.resource.data.name.size() <= 100
+                    && request.resource.data.surname is string
+                    && request.resource.data.surname.size() <= 100
+                    && request.resource.data.email is string
+                    && request.resource.data.email.size() <= 200
+                    && request.resource.data.phone is string
+                    && request.resource.data.phone.size() <= 30;
       allow read, update: if isStaff();
-      allow delete: if false;
+      allow delete: if isSuperadmin();
     }
 
+    // --- Contact messages (public create, staff manage) ---
     match /contactMessages/{messageId} {
-      allow create: if true;
+      allow create: if request.resource.data.status == "new"
+                    && request.resource.data.keys().hasAll(["name", "email", "message", "status", "createdAt"])
+                    && request.resource.data.name is string
+                    && request.resource.data.name.size() <= 100
+                    && request.resource.data.email is string
+                    && request.resource.data.email.size() <= 200
+                    && request.resource.data.message is string
+                    && request.resource.data.message.size() <= 5000;
       allow read, update: if isStaff();
-      allow delete: if false;
+      allow delete: if isSuperadmin();
     }
 
+    // --- Documents ---
     match /documents/{documentId} {
       allow read: if isSignedIn() && (isOwner(resource.data.studentId) || isStaff());
-      allow create: if isSignedIn() && (isOwner(request.resource.data.studentId) || isStaff());
+      allow create: if isSignedIn()
+                    && (isOwner(request.resource.data.studentId) || isStaff())
+                    && request.resource.data.keys().hasAll(["studentId", "name", "fileUrl", "uploadedBy", "uploadedAt"]);
       allow update, delete: if isStaff();
     }
 
+    // --- Messages (chat threads) ---
     match /messages/{studentId}/thread/{messageId} {
-      allow read, create, update: if isSignedIn() && (isOwner(studentId) || isStaff());
+      allow read: if isSignedIn() && (isOwner(studentId) || isStaff());
+      allow create: if isSignedIn()
+                    && (isOwner(studentId) || isStaff())
+                    && request.resource.data.keys().hasAll(["senderRole", "createdAt", "read"]);
+      // Only staff can mark messages as read
+      allow update: if isStaff();
       allow delete: if false;
+    }
+
+    // --- Deny everything else by default ---
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }

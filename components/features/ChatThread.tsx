@@ -15,6 +15,14 @@ import { db, storage } from "@/lib/firebase";
 import { MessageDoc } from "@/types";
 import { cn } from "@/lib/cn";
 
+const ALLOWED_TYPES = new Set([
+  "application/pdf",
+  "image/jpeg",
+  "image/png",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+]);
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
+
 interface ChatThreadProps {
   studentId: string;
   currentUserRole: "student" | "manager";
@@ -62,6 +70,15 @@ export function ChatThread({ studentId, currentUserRole }: ChatThreadProps) {
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
+
+    if (!ALLOWED_TYPES.has(file.type)) {
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
 
     setSending(true);
     try {
@@ -119,7 +136,7 @@ export function ChatThread({ studentId, currentUserRole }: ChatThreadProps) {
       </div>
 
       <div className="flex items-center gap-2 border-t border-gray-100 p-3">
-        <input ref={fileInputRef} type="file" className="hidden" onChange={handleFileUpload} />
+        <input ref={fileInputRef} type="file" className="hidden" accept=".pdf,.jpg,.jpeg,.png,.docx" onChange={handleFileUpload} />
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
@@ -134,6 +151,7 @@ export function ChatThread({ studentId, currentUserRole }: ChatThreadProps) {
           onKeyDown={(event) => {
             if (event.key === "Enter") sendMessage();
           }}
+          maxLength={2000}
           placeholder="Mesaj yazın..."
           className="flex-1 rounded-pill border border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
         />

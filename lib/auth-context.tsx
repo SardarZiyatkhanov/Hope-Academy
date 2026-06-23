@@ -12,8 +12,6 @@ import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
 import { UserDoc } from "@/types";
 
-const SESSION_COOKIE = "session_role";
-
 interface AuthContextValue {
   user: User | null;
   profile: UserDoc | null;
@@ -28,11 +26,15 @@ const AuthContext = createContext<AuthContextValue>({
   logout: async () => {},
 });
 
-function setRoleCookie(role: string | null) {
-  if (role) {
-    document.cookie = `${SESSION_COOKIE}=${role}; path=/; max-age=${60 * 60 * 24 * 7}`;
+async function setSessionCookie(idToken: string | null) {
+  if (idToken) {
+    await fetch("/api/auth/session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ idToken }),
+    });
   } else {
-    document.cookie = `${SESSION_COOKIE}=; path=/; max-age=0`;
+    await fetch("/api/auth/logout", { method: "POST" });
   }
 }
 
@@ -49,10 +51,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const snap = await getDoc(doc(db, "users", firebaseUser.uid));
         const data = snap.exists() ? (snap.data() as UserDoc) : null;
         setProfile(data);
-        setRoleCookie(data?.role ?? null);
+        const token = await firebaseUser.getIdToken();
+        await setSessionCookie(token);
       } else {
         setProfile(null);
-        setRoleCookie(null);
+        await setSessionCookie(null);
       }
 
       setLoading(false);
@@ -63,7 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     await signOut(auth);
-    setRoleCookie(null);
+    await setSessionCookie(null);
   };
 
   return (

@@ -64,7 +64,12 @@ export default function RegisterPage() {
         createdAt: serverTimestamp(),
       });
 
-      document.cookie = `session_role=student; path=/; max-age=${60 * 60 * 24 * 7}`;
+      const idToken = await credential.user.getIdToken();
+      await fetch("/api/auth/session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idToken }),
+      });
       router.push("/student/dashboard");
     } catch (err) {
       const code = err instanceof Error && "code" in err ? String((err as { code: string }).code) : "";
@@ -117,6 +122,7 @@ export default function RegisterPage() {
                     id="name"
                     type="text"
                     required
+                    maxLength={100}
                     autoComplete="name"
                     value={name}
                     onChange={(event) => setName(event.target.value)}
@@ -139,6 +145,7 @@ export default function RegisterPage() {
                     id="email"
                     type="email"
                     required
+                    maxLength={200}
                     autoComplete="email"
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
@@ -160,6 +167,7 @@ export default function RegisterPage() {
                   <input
                     id="phone"
                     type="tel"
+                    maxLength={30}
                     autoComplete="tel"
                     value={phone}
                     onChange={(event) => setPhone(event.target.value)}
@@ -183,6 +191,7 @@ export default function RegisterPage() {
                     type={showPassword ? "text" : "password"}
                     required
                     minLength={6}
+                    maxLength={128}
                     autoComplete="new-password"
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
@@ -214,6 +223,7 @@ export default function RegisterPage() {
                     type={showPassword ? "text" : "password"}
                     required
                     minLength={6}
+                    maxLength={128}
                     autoComplete="new-password"
                     value={confirmPassword}
                     onChange={(event) => setConfirmPassword(event.target.value)}
