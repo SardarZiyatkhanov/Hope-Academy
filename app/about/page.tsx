@@ -124,7 +124,7 @@ export default function AboutPage() {
               <div className="relative h-44 overflow-hidden">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=700&fit=crop"
+                  src="/images/about/team.jpg"
                   alt="Komanda"
                   className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   loading="lazy"
@@ -149,7 +149,7 @@ export default function AboutPage() {
               <div className="relative h-44 overflow-hidden">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=700&fit=crop"
+                  src="/images/about/graduation.jpg"
                   alt="Məzuniyyət"
                   className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   loading="lazy"
@@ -207,7 +207,7 @@ export default function AboutPage() {
       <section className="relative h-56 overflow-hidden sm:h-72">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=1400&fit=crop"
+          src="/images/about/campus.jpg"
           alt="Universitet kampusu"
           className="absolute inset-0 h-full w-full object-cover"
           loading="lazy"

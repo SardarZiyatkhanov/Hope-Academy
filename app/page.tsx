@@ -52,42 +52,42 @@ const HOME_SERVICES = [
     title: "Universitet seçimi",
     desc: "Maraqlarınıza və büdcənizə uyğun ən doğru universitet və proqramı birlikdə müəyyənləşdiririk.",
     gradient: "from-blue to-navy",
-    image: "https://images.unsplash.com/photo-1562774053-701939374585?w=800&fit=crop",
+    image: "/images/services/university.jpg",
   },
   {
     icon: FileCheck,
     title: "Sənəd hazırlığı",
     desc: "Diplom, transkript, motivasiya məktubu — bütün sənədləri tələblərə uyğun hazırlayırıq.",
     gradient: "from-gold to-accent",
-    image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&fit=crop",
+    image: "/images/services/documents.jpg",
   },
   {
     icon: Send,
     title: "Müraciətin göndərilməsi",
     desc: "Sənədləri vaxtında və düzgün formatda universitetə çatdırır, prosesi izləyirik.",
     gradient: "from-accent to-blue",
-    image: "https://images.unsplash.com/photo-1596526131083-e8c633c948d2?w=800&fit=crop",
+    image: "/images/services/laptop.jpg",
   },
   {
     icon: GraduationCap,
     title: "Qəbul & Qeydiyyat",
     desc: "Qəbul məktubundan sonra qeydiyyat, ödəniş və universitetin bütün tələblərini həll edirik.",
     gradient: "from-navy to-blue",
-    image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&fit=crop",
+    image: "/images/services/graduation.jpg",
   },
   {
     icon: Plane,
     title: "Viza & Uçuş",
     desc: "Viza sənədləri, müsahibəyə hazırlıq və uçuş planlaması — hamısında dəstək.",
     gradient: "from-gold to-navy",
-    image: "https://images.unsplash.com/photo-1436491865332-7a61a109db05?w=800&fit=crop",
+    image: "/images/services/airplane.jpg",
   },
   {
     icon: HomeIcon,
     title: "Yaşayış dəstəyi",
     desc: "Yeni şəhərdə yaşayış yeri tapılması və məskunlaşma üçün praktiki məsləhətlər.",
     gradient: "from-blue to-accent",
-    image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&fit=crop",
+    image: "/images/services/apartment.jpg",
   },
 ];
 
@@ -220,7 +220,7 @@ export default function Home() {
       <section className="relative h-64 overflow-hidden sm:h-80">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1400&fit=crop"
+          src="/images/students-banner.jpg"
           alt="Tələbələr"
           className="absolute inset-0 h-full w-full object-cover"
           loading="lazy"

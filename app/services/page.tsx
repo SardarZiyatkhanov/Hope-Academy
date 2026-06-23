@@ -142,7 +142,7 @@ export default function ServicesPage() {
         <section className="relative h-[340px] w-full overflow-hidden sm:h-[420px]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1400&fit=crop"
+            src="/images/students-banner.jpg"
             alt="Tələbələr qrupu"
             className="absolute inset-0 h-full w-full object-cover"
             loading="lazy"
@@ -199,7 +199,7 @@ export default function ServicesPage() {
             <div className="relative overflow-hidden rounded-card border border-gray-100 p-8">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="https://images.unsplash.com/photo-1519677100203-a0e668c92439?w=800&fit=crop"
+                src="/images/europe-arch.jpg"
                 alt="Avropa memarlığı"
                 className="absolute inset-0 h-full w-full object-cover"
                 loading="lazy"
