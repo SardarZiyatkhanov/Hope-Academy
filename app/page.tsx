@@ -120,7 +120,7 @@ export default function Home() {
         <div className="relative z-10 mx-auto grid min-h-[85vh] max-w-7xl items-center gap-10 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:px-8 lg:py-28">
           <HeroContent />
           <div className="order-first lg:order-last">
-            <WorldMap routes={DEFAULT_WORLD_ROUTES} className="h-[320px] sm:h-[400px] lg:h-[520px]" />
+            <WorldMap routes={DEFAULT_WORLD_ROUTES} variant="dark" className="h-[320px] sm:h-[400px] lg:h-[520px]" />
           </div>
         </div>
       </section>

@@ -8,7 +8,6 @@ interface WorldMapProps {
   routes: WorldMapRoute[];
   height?: number;
   className?: string;
-  // variant kept for API compat — ignored (map is always light tile style now)
   variant?: "dark" | "light";
 }
 
@@ -17,13 +16,13 @@ const LeafletMapInner = dynamic(() => import("./LeafletMapInner"), {
   loading: () => <Skeleton className="h-full w-full" />,
 });
 
-export function WorldMap({ routes, height = 300, className }: WorldMapProps) {
+export function WorldMap({ routes, height = 300, className, variant = "light" }: WorldMapProps) {
   return (
     <div
       style={{ height }}
       className={`relative w-full overflow-hidden rounded-xl ${className ?? ""}`}
     >
-      <LeafletMapInner routes={routes} />
+      <LeafletMapInner routes={routes} variant={variant} />
     </div>
   );
 }

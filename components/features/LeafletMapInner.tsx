@@ -34,7 +34,7 @@ function arcPoints(
   return pts;
 }
 
-function makeMarkerIcon(color: string, pulse = false) {
+function makeMarkerIcon(color: string, pulse = false, borderColor = "white") {
   return L.divIcon({
     className: "",
     html: `
@@ -50,7 +50,7 @@ function makeMarkerIcon(color: string, pulse = false) {
           width:14px;height:14px;
           border-radius:50%;
           background:${color};
-          border:2.5px solid white;
+          border:2.5px solid ${borderColor};
           box-shadow:0 1px 6px rgba(0,0,0,0.25);
         "></div>
       </div>
@@ -69,11 +69,31 @@ const PULSE_CSS = `
   }
 `;
 
+const TILES = {
+  light: {
+    url: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+    markerBorder: "white",
+    lineColor: "#1a4aa8",
+    lineOpacity: 0.65,
+    originColor: "#e8a020",
+    destColor: "#2b6de8",
+  },
+  dark: {
+    url: "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png",
+    markerBorder: "#0e2454",
+    lineColor: "#4d8ef7",
+    lineOpacity: 0.55,
+    originColor: "#e8a020",
+    destColor: "#6ba3ff",
+  },
+} as const;
+
 interface LeafletMapInnerProps {
   routes: WorldMapRoute[];
+  variant?: "dark" | "light";
 }
 
-export default function LeafletMapInner({ routes }: LeafletMapInnerProps) {
+export default function LeafletMapInner({ routes, variant = "light" }: LeafletMapInnerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
 
@@ -97,20 +117,21 @@ export default function LeafletMapInner({ routes }: LeafletMapInnerProps) {
     });
     mapRef.current = map;
 
-    // CartoDB Voyager — closest free tile to Google Maps style
-    L.tileLayer(
-      "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
-      {
-        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/">CARTO</a>',
-        subdomains: "abcd",
-        maxZoom: 19,
-      }
-    ).addTo(map);
+    if (variant === "dark") {
+      containerRef.current.classList.add("leaflet-dark");
+    }
+
+    const theme = TILES[variant];
+
+    L.tileLayer(theme.url, {
+      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/">CARTO</a>',
+      subdomains: "abcd",
+      maxZoom: 19,
+    }).addTo(map);
 
     const [bakuLng, bakuLat] = BAKU_COORDS;
 
-    // Baku marker (origin — gold)
-    L.marker([bakuLat, bakuLng], { icon: makeMarkerIcon("#e8a020", true) })
+    L.marker([bakuLat, bakuLng], { icon: makeMarkerIcon(theme.originColor, true, theme.markerBorder) })
       .addTo(map)
       .bindPopup("<b>Bakı</b><br>Başlanğıc nöqtəsi");
 
@@ -120,18 +141,16 @@ export default function LeafletMapInner({ routes }: LeafletMapInnerProps) {
       const [destLng, destLat] = route.to;
       allPoints.push([destLat, destLng]);
 
-      // Curved arc line
       const pts = arcPoints(BAKU_COORDS, route.to);
       L.polyline(pts, {
-        color: "#1a4aa8",
+        color: theme.lineColor,
         weight: 2,
-        opacity: 0.65,
+        opacity: theme.lineOpacity,
         dashArray: "6 4",
         lineCap: "round",
       }).addTo(map);
 
-      // Destination marker (blue)
-      L.marker([destLat, destLng], { icon: makeMarkerIcon("#2b6de8", true) })
+      L.marker([destLat, destLng], { icon: makeMarkerIcon(theme.destColor, true, theme.markerBorder) })
         .addTo(map)
         .bindPopup(`<b>${route.label}</b>`);
     });
@@ -159,8 +178,9 @@ export default function LeafletMapInner({ routes }: LeafletMapInnerProps) {
       if (!(layer instanceof L.TileLayer)) map.removeLayer(layer);
     });
 
+    const theme = TILES[variant];
     const [bakuLng, bakuLat] = BAKU_COORDS;
-    L.marker([bakuLat, bakuLng], { icon: makeMarkerIcon("#e8a020", true) })
+    L.marker([bakuLat, bakuLng], { icon: makeMarkerIcon(theme.originColor, true, theme.markerBorder) })
       .addTo(map)
       .bindPopup("<b>Bakı</b><br>Başlanğıc nöqtəsi");
 
@@ -172,14 +192,14 @@ export default function LeafletMapInner({ routes }: LeafletMapInnerProps) {
 
       const pts = arcPoints(BAKU_COORDS, route.to);
       L.polyline(pts, {
-        color: "#1a4aa8",
+        color: theme.lineColor,
         weight: 2,
-        opacity: 0.65,
+        opacity: theme.lineOpacity,
         dashArray: "6 4",
         lineCap: "round",
       }).addTo(map);
 
-      L.marker([destLat, destLng], { icon: makeMarkerIcon("#2b6de8", true) })
+      L.marker([destLat, destLng], { icon: makeMarkerIcon(theme.destColor, true, theme.markerBorder) })
         .addTo(map)
         .bindPopup(`<b>${route.label}</b>`);
     });
@@ -187,7 +207,7 @@ export default function LeafletMapInner({ routes }: LeafletMapInnerProps) {
     if (allPoints.length > 1) {
       map.fitBounds(L.latLngBounds(allPoints), { padding: [32, 32] });
     }
-  }, [routes]);
+  }, [routes, variant]);
 
   return <div ref={containerRef} className="h-full w-full" />;
 }
