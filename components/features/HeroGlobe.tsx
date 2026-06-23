@@ -179,11 +179,11 @@ export function HeroGlobe({ className }: { className?: string }) {
   }, [projection, bakuXY, routeData]);
 
   return (
-    <div className={`flex items-center justify-center ${className ?? ""}`}>
+    <div className={`flex items-center justify-center overflow-hidden ${className ?? ""}`}>
       <canvas
         ref={canvasRef}
-        style={{ width: W, height: H }}
-        className="max-w-full"
+        style={{ width: W, maxWidth: "100%", aspectRatio: `${W}/${H}` }}
+        className=""
       />
     </div>
   );
