@@ -4,8 +4,8 @@ import { Resend } from "resend";
 
 const resendApiKey = defineSecret("RESEND_API_KEY");
 
-const TEAM_EMAIL = "info@hopeacademy.az";
-const FROM_EMAIL = "Hope Academy <noreply@hopeacademy.az>";
+const TEAM_EMAIL = "sziyatkhanov17499@ada.edu.az";
+const FROM_EMAIL = "Hope Academy <onboarding@resend.dev>";
 
 function getResend(): Resend {
   return new Resend(resendApiKey.value());
@@ -19,8 +19,9 @@ export const onNewLead = onDocumentCreated(
     if (!data) return;
 
     const resend = getResend();
+    console.log("onNewLead triggered for:", data.name, data.surname);
 
-    await resend.emails.send({
+    const teamResult = await resend.emails.send({
       from: FROM_EMAIL,
       to: TEAM_EMAIL,
       subject: `Yeni müraciət: ${data.name} ${data.surname}`,
@@ -47,9 +48,10 @@ export const onNewLead = onDocumentCreated(
         </div>
       `,
     });
+    console.log("Team email result:", JSON.stringify(teamResult));
 
     if (data.email) {
-      await resend.emails.send({
+      const userResult = await resend.emails.send({
         from: FROM_EMAIL,
         to: data.email,
         subject: "Müraciətiniz alındı — Hope Academy",
@@ -73,6 +75,7 @@ export const onNewLead = onDocumentCreated(
           </div>
         `,
       });
+      console.log("User email result:", JSON.stringify(userResult));
     }
   },
 );
