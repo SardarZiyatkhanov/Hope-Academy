@@ -35,6 +35,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# firebase functions
+functions/lib
+functions/node_modules
+
 # claude code
 .claude
 .env*
