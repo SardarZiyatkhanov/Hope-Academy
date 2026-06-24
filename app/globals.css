@@ -101,4 +101,55 @@ body {
   .animate-marquee {
     animation: none;
   }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* UX: Focus visible for keyboard navigation */
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* UX: Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* UX: cursor-pointer on all interactive elements */
+a, button, [role="button"], input[type="submit"], select, summary,
+[onclick], [tabindex]:not([tabindex="-1"]) {
+  cursor: pointer;
+}
+
+/* UX: Selection color */
+::selection {
+  background: rgba(26, 74, 168, 0.2);
+  color: var(--navy);
+}
+
+/* Subtle image load transition */
+img {
+  transition: opacity 0.3s ease;
+}
+img[loading="lazy"] {
+  opacity: 0;
+}
+img[loading="lazy"].loaded,
+img[loading="lazy"][complete] {
+  opacity: 1;
+}
+/* Fallback: show after short delay even without JS */
+@keyframes img-reveal {
+  to { opacity: 1; }
+}
+img[loading="lazy"] {
+  animation: img-reveal 0s 0.5s forwards;
 }
