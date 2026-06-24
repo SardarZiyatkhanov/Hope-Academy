@@ -14,6 +14,8 @@ import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
+import { StaggerReveal, StaggerItem } from "@/components/ui/StaggerReveal";
+import { MotionCard } from "@/components/ui/MotionCard";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 
 const STATS = [
@@ -242,11 +244,11 @@ export default function AboutPage() {
             </div>
           </Reveal>
 
-          <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <StaggerReveal className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {/* TODO: Real team photos and bios needed — current data is illustrative */}
-            {TEAM.map((member, index) => (
-              <Reveal key={member.name} delay={index * 0.08}>
-                <div className="group relative overflow-hidden rounded-card bg-white shadow-sm ring-1 ring-gray-100 transition-all hover:-translate-y-1 hover:shadow-xl hover:ring-blue/20">
+            {TEAM.map((member) => (
+              <StaggerItem key={member.name}>
+                <MotionCard className="group relative overflow-hidden rounded-card bg-white shadow-sm ring-1 ring-gray-100 hover:ring-blue/20">
                   {/* Top gradient bar */}
                   <div className={`h-1.5 w-full bg-gradient-to-r ${member.gradient}`} />
 
@@ -289,10 +291,10 @@ export default function AboutPage() {
                       </span>
                     </div>
                   </div>
-                </div>
-              </Reveal>
+                </MotionCard>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerReveal>
         </div>
       </section>
 

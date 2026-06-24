@@ -26,6 +26,8 @@ import { PartnerUniversities } from "@/components/features/PartnerUniversities";
 import { Testimonials } from "@/components/features/Testimonials";
 import { FAQ } from "@/components/features/FAQ";
 import { Reveal } from "@/components/ui/Reveal";
+import { StaggerReveal, StaggerItem } from "@/components/ui/StaggerReveal";
+import { MotionCard } from "@/components/ui/MotionCard";
 import { UniversityFinder } from "@/components/features/UniversityFinder";
 import { CostEstimator } from "@/components/features/CostEstimator";
 import { CONTACT } from "@/lib/constants";
@@ -163,16 +165,16 @@ export default function Home() {
             </Link>
           </Reveal>
 
-          <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {HOME_SERVICES.map(({ icon: Icon, title, desc, gradient, image }, index) => (
-              <Reveal key={title} delay={(index % 3) * 0.08}>
-                <div className="group h-full overflow-hidden rounded-card border border-gray-100 bg-white transition-all hover:-translate-y-1 hover:shadow-lg">
+          <StaggerReveal className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {HOME_SERVICES.map(({ icon: Icon, title, desc, gradient, image }) => (
+              <StaggerItem key={title}>
+                <MotionCard className="group h-full cursor-pointer overflow-hidden rounded-card border border-gray-100 bg-white shadow-sm">
                   <div className="relative h-36 w-full overflow-hidden">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={image}
                       alt={title}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                       loading="lazy"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-white via-white/30 to-transparent" />
@@ -186,10 +188,10 @@ export default function Home() {
                     <h3 className="text-base font-semibold text-navy">{title}</h3>
                     <p className="mt-1.5 text-sm text-gray-500">{desc}</p>
                   </div>
-                </div>
-              </Reveal>
+                </MotionCard>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerReveal>
         </div>
       </section>
 
