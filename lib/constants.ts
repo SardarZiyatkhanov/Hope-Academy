@@ -98,6 +98,41 @@ export const DOCUMENT_TYPE_LABELS: Record<DocumentType, string> = {
   other: "Digər",
 };
 
+export const ACTIVITY_ACTION_LABELS: Record<string, string> = {
+  create: "Yaradıldı",
+  update: "Yeniləndi",
+  delete: "Silindi",
+  status_change: "Status dəyişdi",
+};
+
+export const ACTIVITY_ENTITY_LABELS: Record<string, string> = {
+  student: "Tələbə",
+  lead: "Lid",
+  application: "Ərizə",
+  document: "Sənəd",
+  university: "Universitet",
+  manager: "Menecer",
+  settings: "Parametrlər",
+};
+
+export const COUNTRIES = [
+  "Almaniya",
+  "Niderland",
+  "Çexiya",
+  "Belçika",
+  "Fransa",
+  "Polşa",
+  "Avstriya",
+  "Türkiyə",
+  "BƏƏ",
+  "Böyük Britaniya",
+  "İtaliya",
+  "Macarıstan",
+  "Kanada",
+  "ABŞ",
+  "Digər",
+];
+
 // Baku coordinates [lng, lat]
 export const BAKU_COORDS: [number, number] = [49.9, 40.4];
 

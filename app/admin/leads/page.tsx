@@ -1,17 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { collection, onSnapshot, orderBy, query, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { exportToCSV } from "@/lib/export-csv";
 import { Button } from "@/components/ui/Button";
 import { Avatar } from "@/components/ui/Avatar";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { TableSkeleton } from "@/components/ui/TableSkeleton";
 import { LeadStatusSelect } from "@/components/features/LeadStatusSelect";
 import { CreateLeadModal } from "@/components/features/CreateLeadModal";
-import { LEAD_LEVEL_LABELS } from "@/lib/constants";
+import { LEAD_LEVEL_LABELS, LEAD_STATUS_LABELS, LEAD_STATUS_ORDER } from "@/lib/constants";
 import { LeadDoc, UserDoc } from "@/types";
-import { UserPlus, TrendingUp } from "lucide-react";
+import { UserPlus, TrendingUp, Download, Search, Filter } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 const LEVEL_STYLE: Record<string, string> = {
@@ -25,6 +26,12 @@ export default function AdminLeadsPage() {
   const [managers, setManagers] = useState<UserDoc[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  // Filters
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [levelFilter, setLevelFilter] = useState("");
+  const [managerFilter, setManagerFilter] = useState("");
 
   useEffect(() => {
     const q = query(collection(db, "leads"), orderBy("createdAt", "desc"));
@@ -44,6 +51,43 @@ export default function AdminLeadsPage() {
   const managerNames: Record<string, string> = {};
   managers.forEach((m) => { managerNames[m.uid] = m.name; });
 
+  const filtered = useMemo(() => {
+    let list = leads;
+    if (statusFilter) list = list.filter((l) => l.status === statusFilter);
+    if (levelFilter) list = list.filter((l) => l.level === levelFilter);
+    if (managerFilter) list = list.filter((l) => l.assignedTo === managerFilter);
+    if (search.trim()) {
+      const term = search.toLowerCase();
+      list = list.filter(
+        (l) =>
+          `${l.name} ${l.surname}`.toLowerCase().includes(term) ||
+          l.phone.includes(term) ||
+          l.email.toLowerCase().includes(term)
+      );
+    }
+    return list;
+  }, [leads, search, statusFilter, levelFilter, managerFilter]);
+
+  const handleExport = () => {
+    exportToCSV(
+      filtered.map((l) => ({
+        Ad: l.name,
+        Soyad: l.surname,
+        Telefon: l.phone,
+        Email: l.email,
+        Ölkə: l.country,
+        Səviyyə: LEAD_LEVEL_LABELS[l.level],
+        İxtisas: l.specialty,
+        Status: LEAD_STATUS_LABELS[l.status].az,
+        Menecer: l.assignedTo ? managerNames[l.assignedTo] ?? "" : "",
+        Tarix: l.createdAt?.toDate?.()?.toLocaleDateString("az-AZ") ?? "",
+      })),
+      "lidler"
+    );
+  };
+
+  const activeFilters = [statusFilter, levelFilter, managerFilter].filter(Boolean).length;
+
   return (
     <div className="flex flex-col gap-7">
       {/* Page header */}
@@ -52,21 +96,84 @@ export default function AdminLeadsPage() {
           <h1 className="text-xl font-bold text-navy">Lidlər</h1>
           <p className="mt-0.5 text-sm text-gray-400">
             Cəmi <span className="font-semibold text-navy">{leads.length}</span> potensial tələbə
+            {filtered.length !== leads.length && (
+              <span className="ml-1 text-blue-600">
+                ({filtered.length} göstərilir)
+              </span>
+            )}
           </p>
         </div>
-        <Button onClick={() => setModalOpen(true)} className="flex items-center gap-2">
-          <UserPlus size={16} />
-          Yeni lid
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" onClick={handleExport} className="flex items-center gap-2">
+            <Download size={15} />
+            CSV
+          </Button>
+          <Button onClick={() => setModalOpen(true)} className="flex items-center gap-2">
+            <UserPlus size={16} />
+            Yeni lid
+          </Button>
+        </div>
       </div>
 
       {/* Table card */}
       <section className="rounded-xl border border-gray-100 bg-white shadow-sm">
-        <div className="flex items-center gap-2 border-b border-gray-100 px-5 py-4">
-          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-navy/5">
-            <TrendingUp size={14} className="text-navy" />
-          </span>
-          <h2 className="text-sm font-semibold text-navy">Bütün lidlər</h2>
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-100 px-5 py-4">
+          <div className="flex items-center gap-2">
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-navy/5">
+              <TrendingUp size={14} className="text-navy" />
+            </span>
+            <h2 className="text-sm font-semibold text-navy">Bütün lidlər</h2>
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-1.5 text-gray-400">
+              <Filter size={13} />
+              {activeFilters > 0 && (
+                <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-blue px-1 text-[10px] font-bold text-white">
+                  {activeFilters}
+                </span>
+              )}
+            </div>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-navy outline-none focus:ring-2 focus:ring-accent"
+            >
+              <option value="">Bütün statuslar</option>
+              {LEAD_STATUS_ORDER.map((s) => (
+                <option key={s} value={s}>{LEAD_STATUS_LABELS[s].az}</option>
+              ))}
+            </select>
+            <select
+              value={levelFilter}
+              onChange={(e) => setLevelFilter(e.target.value)}
+              className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-navy outline-none focus:ring-2 focus:ring-accent"
+            >
+              <option value="">Bütün səviyyələr</option>
+              {Object.entries(LEAD_LEVEL_LABELS).map(([k, v]) => (
+                <option key={k} value={k}>{v}</option>
+              ))}
+            </select>
+            <select
+              value={managerFilter}
+              onChange={(e) => setManagerFilter(e.target.value)}
+              className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-navy outline-none focus:ring-2 focus:ring-accent"
+            >
+              <option value="">Bütün menecerlər</option>
+              {managers.map((m) => (
+                <option key={m.uid} value={m.uid}>{m.name}</option>
+              ))}
+            </select>
+            <div className="relative">
+              <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Ad, telefon, email..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="rounded-lg border border-gray-200 bg-white py-2 pl-8 pr-3 text-xs text-navy outline-none focus:ring-2 focus:ring-accent"
+              />
+            </div>
+          </div>
         </div>
 
         <div className="overflow-x-auto">
@@ -87,7 +194,7 @@ export default function AdminLeadsPage() {
                 <TableSkeleton cols={7} />
               ) : (
                 <>
-                  {leads.map((lead) => (
+                  {filtered.map((lead) => (
                     <tr key={lead.id} className="group transition-colors hover:bg-blue-50/30">
                       <td className="px-5 py-3.5">
                         <div className="flex items-center gap-3">
@@ -113,7 +220,11 @@ export default function AdminLeadsPage() {
                         </span>
                       </td>
                       <td className="px-4 py-3.5">
-                        <LeadStatusSelect leadId={lead.id} status={lead.status} />
+                        <LeadStatusSelect
+                          leadId={lead.id}
+                          status={lead.status}
+                          leadName={`${lead.name} ${lead.surname}`}
+                        />
                       </td>
                       <td className="px-4 py-3.5 text-gray-600">
                         {lead.assignedTo ? managerNames[lead.assignedTo] ?? "—" : "—"}
@@ -125,14 +236,22 @@ export default function AdminLeadsPage() {
                       </td>
                     </tr>
                   ))}
-                  {leads.length === 0 && (
+                  {filtered.length === 0 && (
                     <tr>
                       <td colSpan={7} className="px-5 py-12">
                         <EmptyState
                           icon={UserPlus}
-                          title="Hələ lid yoxdur"
-                          description="Yeni potensial tələbə əlavə etmək üçün düymədən istifadə edin."
-                          action={<Button onClick={() => setModalOpen(true)}>Yeni lid</Button>}
+                          title={search || activeFilters ? "Nəticə tapılmadı" : "Hələ lid yoxdur"}
+                          description={
+                            search || activeFilters
+                              ? "Filtrləri dəyişdirin və ya axtarış sorğusunu yenidən cəhd edin."
+                              : "Yeni potensial tələbə əlavə etmək üçün düymədən istifadə edin."
+                          }
+                          action={
+                            !search && !activeFilters ? (
+                              <Button onClick={() => setModalOpen(true)}>Yeni lid</Button>
+                            ) : undefined
+                          }
                         />
                       </td>
                     </tr>

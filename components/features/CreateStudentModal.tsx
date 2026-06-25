@@ -8,6 +8,8 @@ import { Modal } from "@/components/ui/Modal";
 import { Input, Select } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { useToast } from "@/components/ui/Toast";
+import { useAuth } from "@/lib/auth-context";
+import { logActivity } from "@/lib/activity-log";
 import { UserDoc } from "@/types";
 
 const INITIAL_FORM = {
@@ -29,6 +31,7 @@ export function CreateStudentModal({ open, onClose, managers }: CreateStudentMod
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const { showToast } = useToast();
+  const { user: authUser, profile } = useAuth();
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -54,6 +57,15 @@ export function CreateStudentModal({ open, onClose, managers }: CreateStudentMod
       });
 
       await signOut(secondaryAuth);
+
+      await logActivity({
+        action: "create",
+        entity: "student",
+        entityId: credential.user.uid,
+        entityName: form.name,
+        userId: authUser?.uid ?? "",
+        userName: profile?.name ?? "",
+      });
 
       showToast("Tələbə yaradıldı");
       setForm(INITIAL_FORM);

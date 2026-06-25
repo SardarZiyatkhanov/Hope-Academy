@@ -7,10 +7,10 @@ import { Modal } from "@/components/ui/Modal";
 import { Input, Select } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { useToast } from "@/components/ui/Toast";
-import { LEAD_LEVEL_LABELS } from "@/lib/constants";
+import { useAuth } from "@/lib/auth-context";
+import { logActivity } from "@/lib/activity-log";
+import { COUNTRIES, LEAD_LEVEL_LABELS } from "@/lib/constants";
 import { LeadLevel, UserDoc } from "@/types";
-
-const COUNTRIES = ["Almaniya", "Niderland", "Çexiya", "Belçika", "Fransa", "Polşa", "Avstriya", "Digər"];
 
 const INITIAL_FORM = {
   name: "",
@@ -34,12 +34,13 @@ export function CreateLeadModal({ open, onClose, managers }: CreateLeadModalProp
   const [form, setForm] = useState(INITIAL_FORM);
   const [submitting, setSubmitting] = useState(false);
   const { showToast } = useToast();
+  const { user, profile } = useAuth();
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     setSubmitting(true);
     try {
-      await addDoc(collection(db, "leads"), {
+      const ref = await addDoc(collection(db, "leads"), {
         name: form.name,
         surname: form.surname,
         phone: form.phone,
@@ -52,6 +53,14 @@ export function CreateLeadModal({ open, onClose, managers }: CreateLeadModalProp
         status: "new",
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
+      });
+      await logActivity({
+        action: "create",
+        entity: "lead",
+        entityId: ref.id,
+        entityName: `${form.name} ${form.surname}`,
+        userId: user?.uid ?? "",
+        userName: profile?.name ?? "",
       });
       showToast("Lid əlavə edildi");
       setForm(INITIAL_FORM);

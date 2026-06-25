@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Marquee } from "@/components/ui/Marquee";
 
 const UNIVERSITIES = [
   {
@@ -63,10 +64,10 @@ const UNIVERSITIES = [
   },
 ];
 
-function LogoBadge({ uni }: { uni: typeof UNIVERSITIES[0] }) {
+function LogoBadge({ uni }: { uni: (typeof UNIVERSITIES)[0] }) {
   if (uni.logo) {
     return (
-      <div className="flex h-12 w-36 shrink-0 items-center justify-center rounded-[10px] bg-white px-3 py-2 shadow-sm ring-1 ring-gray-100">
+      <div className="flex h-14 w-40 shrink-0 items-center justify-center rounded-xl bg-white px-4 py-2 shadow-sm ring-1 ring-gray-100 transition-shadow hover:shadow-md">
         <Image
           src={uni.logo}
           alt={uni.name}
@@ -80,7 +81,7 @@ function LogoBadge({ uni }: { uni: typeof UNIVERSITIES[0] }) {
   }
   return (
     <div
-      className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-[10px] bg-gradient-to-br ${uni.color} text-[11px] font-bold text-white shadow-sm`}
+      className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${uni.color} text-[11px] font-bold text-white shadow-sm transition-shadow hover:shadow-md`}
     >
       {uni.abbr}
     </div>
@@ -88,28 +89,29 @@ function LogoBadge({ uni }: { uni: typeof UNIVERSITIES[0] }) {
 }
 
 export function PartnerUniversities() {
-  const items = [...UNIVERSITIES, ...UNIVERSITIES];
-
   return (
-    <section className="border-y border-gray-100 bg-white py-12">
+    <section aria-label="Tərəfdaş universitetlər" className="border-y border-gray-100 bg-white py-14">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <p className="text-center text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
           Tərəfdaş universitetlər
         </p>
-        <div className="mt-8 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
-          <div className="flex w-max animate-marquee items-center gap-5">
-            {items.map((uni, index) => (
-              <div
-                key={`${uni.name}-${index}`}
-                className="flex items-center gap-3 whitespace-nowrap"
-                title={uni.name}
-              >
-                <LogoBadge uni={uni} />
-                <span className="text-sm font-medium text-gray-500">{uni.name}</span>
-              </div>
-            ))}
-          </div>
-        </div>
+      </div>
+
+      <div className="mt-8">
+        <Marquee speed="normal" pauseOnHover>
+          {UNIVERSITIES.map((uni) => (
+            <div
+              key={uni.name}
+              className="flex items-center gap-3 whitespace-nowrap px-2"
+              title={uni.name}
+            >
+              <LogoBadge uni={uni} />
+              <span className="text-sm font-medium text-gray-500">
+                {uni.name}
+              </span>
+            </div>
+          ))}
+        </Marquee>
       </div>
     </section>
   );

@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { PortalHeader } from "@/components/layout/PortalHeader";
 import { Sidebar } from "@/components/layout/Sidebar";
+import { AdminBottomNav } from "@/components/layout/AdminBottomNav";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -10,8 +11,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <Suspense fallback={<div className="hidden w-[200px] shrink-0 sm:flex" style={{ background: "linear-gradient(180deg, #0e2454 0%, #091b43 100%)" }} />}>
           <Sidebar />
         </Suspense>
-        <main className="min-w-0 flex-1 p-4 sm:p-6">{children}</main>
+        <main className="min-w-0 flex-1 p-4 pb-20 sm:p-6 sm:pb-6">{children}</main>
       </div>
+      <AdminBottomNav />
     </div>
   );
 }

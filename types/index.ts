@@ -130,3 +130,27 @@ export interface MessageDoc {
   createdAt: Timestamp;
   read: boolean;
 }
+
+export type ActivityAction = "create" | "update" | "delete" | "status_change";
+export type ActivityEntity =
+  | "student"
+  | "lead"
+  | "application"
+  | "document"
+  | "university"
+  | "manager"
+  | "settings";
+
+export interface ActivityLogDoc {
+  id: string;
+  action: ActivityAction;
+  entity: ActivityEntity;
+  entityId: string;
+  entityName: string;
+  userId: string;
+  userName: string;
+  details?: string;
+  oldValue?: string;
+  newValue?: string;
+  createdAt: Timestamp;
+}

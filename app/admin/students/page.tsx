@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { exportToCSV } from "@/lib/export-csv";
 import { Button } from "@/components/ui/Button";
 import { Avatar } from "@/components/ui/Avatar";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -11,7 +12,15 @@ import { TableSkeleton } from "@/components/ui/TableSkeleton";
 import { CreateStudentModal } from "@/components/features/CreateStudentModal";
 import { ApplicationDoc, UserDoc } from "@/types";
 import { STATUS_STEP } from "@/lib/constants";
-import { GraduationCap, Users, ArrowUpRight, UserPlus } from "lucide-react";
+import {
+  GraduationCap,
+  Users,
+  ArrowUpRight,
+  UserPlus,
+  Download,
+  Search,
+  Filter,
+} from "lucide-react";
 
 export default function AdminStudentsPage() {
   const [students, setStudents] = useState<UserDoc[]>([]);
@@ -19,6 +28,10 @@ export default function AdminStudentsPage() {
   const [applications, setApplications] = useState<ApplicationDoc[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  // Filters
+  const [search, setSearch] = useState("");
+  const [managerFilter, setManagerFilter] = useState("");
 
   useEffect(() => {
     const q = query(collection(db, "users"), where("role", "==", "student"));
@@ -59,6 +72,34 @@ export default function AdminStudentsPage() {
     return map;
   }, [students, applications]);
 
+  const filtered = useMemo(() => {
+    let list = students;
+    if (managerFilter) list = list.filter((s) => s.managerId === managerFilter);
+    if (search.trim()) {
+      const term = search.toLowerCase();
+      list = list.filter(
+        (s) =>
+          s.name.toLowerCase().includes(term) ||
+          s.email.toLowerCase().includes(term)
+      );
+    }
+    return list;
+  }, [students, search, managerFilter]);
+
+  const handleExport = () => {
+    exportToCSV(
+      filtered.map((s) => ({
+        Ad: s.name,
+        Email: s.email,
+        Telefon: s.phone ?? "",
+        Menecer: s.managerId ? managerNames[s.managerId] ?? "" : "",
+        Ərizə: studentStats[s.uid]?.count ?? 0,
+        "Proqres %": studentStats[s.uid]?.progress ?? 0,
+      })),
+      "telebeler"
+    );
+  };
+
   return (
     <div className="flex flex-col gap-7">
       {/* Page header */}
@@ -67,21 +108,57 @@ export default function AdminStudentsPage() {
           <h1 className="text-xl font-bold text-navy">Tələbələr</h1>
           <p className="mt-0.5 text-sm text-gray-400">
             Cəmi <span className="font-semibold text-navy">{students.length}</span> tələbə
+            {filtered.length !== students.length && (
+              <span className="ml-1 text-blue-600">
+                ({filtered.length} göstərilir)
+              </span>
+            )}
           </p>
         </div>
-        <Button onClick={() => setModalOpen(true)} className="flex items-center gap-2">
-          <UserPlus size={16} />
-          Yeni tələbə
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" onClick={handleExport} className="flex items-center gap-2">
+            <Download size={15} />
+            CSV
+          </Button>
+          <Button onClick={() => setModalOpen(true)} className="flex items-center gap-2">
+            <UserPlus size={16} />
+            Yeni tələbə
+          </Button>
+        </div>
       </div>
 
       {/* Table card */}
       <section className="rounded-xl border border-gray-100 bg-white shadow-sm">
-        <div className="flex items-center gap-2 border-b border-gray-100 px-5 py-4">
-          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-navy/5">
-            <Users size={14} className="text-navy" />
-          </span>
-          <h2 className="text-sm font-semibold text-navy">Bütün tələbələr</h2>
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-100 px-5 py-4">
+          <div className="flex items-center gap-2">
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-navy/5">
+              <Users size={14} className="text-navy" />
+            </span>
+            <h2 className="text-sm font-semibold text-navy">Bütün tələbələr</h2>
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <Filter size={13} className="text-gray-400" />
+            <select
+              value={managerFilter}
+              onChange={(e) => setManagerFilter(e.target.value)}
+              className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-navy outline-none focus:ring-2 focus:ring-accent"
+            >
+              <option value="">Bütün menecerlər</option>
+              {managers.map((m) => (
+                <option key={m.uid} value={m.uid}>{m.name}</option>
+              ))}
+            </select>
+            <div className="relative">
+              <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Ad, email..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="rounded-lg border border-gray-200 bg-white py-2 pl-8 pr-3 text-xs text-navy outline-none focus:ring-2 focus:ring-accent"
+              />
+            </div>
+          </div>
         </div>
 
         <div className="overflow-x-auto">
@@ -101,7 +178,7 @@ export default function AdminStudentsPage() {
                 <TableSkeleton cols={6} />
               ) : (
                 <>
-                  {students.map((student) => {
+                  {filtered.map((student) => {
                     const stats = studentStats[student.uid] ?? { count: 0, progress: 0 };
                     return (
                       <tr key={student.uid} className="group transition-colors hover:bg-blue-50/30">
@@ -145,14 +222,22 @@ export default function AdminStudentsPage() {
                       </tr>
                     );
                   })}
-                  {students.length === 0 && (
+                  {filtered.length === 0 && (
                     <tr>
                       <td colSpan={6} className="px-5 py-12">
                         <EmptyState
                           icon={GraduationCap}
-                          title="Hələ tələbə yoxdur"
-                          description="Yeni tələbə hesabı yaratmaq üçün düymədən istifadə edin."
-                          action={<Button onClick={() => setModalOpen(true)}>Yeni tələbə</Button>}
+                          title={search || managerFilter ? "Nəticə tapılmadı" : "Hələ tələbə yoxdur"}
+                          description={
+                            search || managerFilter
+                              ? "Filtrləri dəyişdirin və ya axtarış sorğusunu yenidən cəhd edin."
+                              : "Yeni tələbə hesabı yaratmaq üçün düymədən istifadə edin."
+                          }
+                          action={
+                            !search && !managerFilter ? (
+                              <Button onClick={() => setModalOpen(true)}>Yeni tələbə</Button>
+                            ) : undefined
+                          }
                         />
                       </td>
                     </tr>

@@ -123,7 +123,7 @@ export function ParticleBackground({ className }: { className?: string }) {
   }, []);
 
   return (
-    <div ref={containerRef} className={`pointer-events-none absolute inset-0 overflow-hidden ${className ?? ""}`}>
+    <div ref={containerRef} aria-hidden="true" className={`pointer-events-none absolute inset-0 overflow-hidden ${className ?? ""}`}>
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
     </div>
   );

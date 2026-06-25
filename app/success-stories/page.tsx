@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, GraduationCap, MapPin, Calendar } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
@@ -141,12 +142,12 @@ export default function SuccessStoriesPage() {
                 <div className="overflow-hidden rounded-card bg-white shadow-sm ring-1 ring-gray-100">
                   <div className="flex">
                     <div className="relative hidden w-36 shrink-0 overflow-hidden sm:block">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
+                      <Image
                         src={story.cityImage}
                         alt={story.city}
-                        className="absolute inset-0 h-full w-full object-cover"
-                        loading="lazy"
+                        fill
+                        sizes="144px"
+                        className="object-cover"
                       />
                       <div className={`absolute inset-0 bg-gradient-to-r ${story.gradient} opacity-40`} />
                     </div>

@@ -38,6 +38,7 @@ next-env.d.ts
 # firebase functions
 functions/lib
 functions/node_modules
+functions/firebase-debug.log
 
 # claude code
 .claude

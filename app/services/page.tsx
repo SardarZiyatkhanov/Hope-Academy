@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import {
   Compass,
@@ -12,6 +14,11 @@ import {
   CheckCircle2,
   Globe2,
 } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Xidmətlər",
+  description: "Universitet seçimi, sənəd hazırlığı, müraciət, viza və yaşayış dəstəyi — Hope Academy ilə hər addımda.",
+};
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/Button";
@@ -140,12 +147,12 @@ export default function ServicesPage() {
       {/* Inspirational image section */}
       <Reveal>
         <section className="relative h-[340px] w-full overflow-hidden sm:h-[420px]">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src="/images/students-banner.jpg"
             alt="Tələbələr qrupu"
-            className="absolute inset-0 h-full w-full object-cover"
-            loading="lazy"
+            fill
+            sizes="100vw"
+            className="object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0e2454] via-[#0e2454]/60 to-transparent" />
           <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col items-center gap-3 px-4 pb-10 text-center sm:pb-14">
@@ -197,12 +204,12 @@ export default function ServicesPage() {
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
           <Reveal>
             <div className="relative overflow-hidden rounded-card border border-gray-100 p-8">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src="/images/europe-arch.jpg"
                 alt="Avropa memarlığı"
-                className="absolute inset-0 h-full w-full object-cover"
-                loading="lazy"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover"
               />
               <div className="absolute inset-0 bg-white/90" />
               {/* Content */}

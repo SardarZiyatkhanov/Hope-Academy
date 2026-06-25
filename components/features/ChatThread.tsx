@@ -8,9 +8,10 @@ import {
   orderBy,
   query,
   serverTimestamp,
+  Timestamp,
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { Paperclip, Send } from "lucide-react";
+import { MessageSquare, Paperclip, Send } from "lucide-react";
 import { db, storage } from "@/lib/firebase";
 import { MessageDoc } from "@/types";
 import { cn } from "@/lib/cn";
@@ -22,6 +23,28 @@ const ALLOWED_TYPES = new Set([
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 ]);
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
+
+const AZ_MONTHS = [
+  "Yan", "Fev", "Mar", "Apr", "May", "İyn",
+  "İyl", "Avq", "Sen", "Okt", "Noy", "Dek",
+];
+
+function formatMessageTime(timestamp: Timestamp | null | undefined): string {
+  if (!timestamp) return "";
+  const date = timestamp.toDate();
+  const now = new Date();
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const time = `${hours}:${minutes}`;
+
+  const isToday =
+    date.getDate() === now.getDate() &&
+    date.getMonth() === now.getMonth() &&
+    date.getFullYear() === now.getFullYear();
+
+  if (isToday) return time;
+  return `${date.getDate()} ${AZ_MONTHS[date.getMonth()]}, ${time}`;
+}
 
 interface ChatThreadProps {
   studentId: string;
@@ -50,7 +73,7 @@ export function ChatThread({ studentId, currentUserRole }: ChatThreadProps) {
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages.length]);
+  }, [messages]);
 
   const sendMessage = async () => {
     const trimmed = text.trim();
@@ -101,16 +124,32 @@ export function ChatThread({ studentId, currentUserRole }: ChatThreadProps) {
     }
   };
 
+  /* Find the last message sent by the current user for read-receipt display */
+  const lastOwnMessageIndex = (() => {
+    for (let i = messages.length - 1; i >= 0; i--) {
+      if (messages[i].senderRole === currentUserRole) return i;
+    }
+    return -1;
+  })();
+
+  const hasText = text.trim().length > 0;
+
   return (
     <div className="flex h-full flex-col">
       <div className="flex-1 space-y-3 overflow-y-auto p-4">
+        {/* Empty state */}
         {messages.length === 0 && (
-          <p className="py-8 text-center text-sm text-gray-400">Hələ mesaj yoxdur</p>
+          <div className="flex flex-col items-center justify-center gap-3 py-16 text-gray-400">
+            <MessageSquare size={40} strokeWidth={1.5} />
+            <p className="text-sm">Hələ mesaj yoxdur &mdash; söhbətə başlayın!</p>
+          </div>
         )}
-        {messages.map((message) => {
+
+        {messages.map((message, index) => {
           const mine = message.senderRole === currentUserRole;
+          const showReceipt = mine && index === lastOwnMessageIndex;
           return (
-            <div key={message.id} className={cn("flex", mine ? "justify-end" : "justify-start")}>
+            <div key={message.id} className={cn("flex flex-col", mine ? "items-end" : "items-start")}>
               <div
                 className={cn(
                   "max-w-[80%] rounded-card px-4 py-2 text-sm",
@@ -128,14 +167,29 @@ export function ChatThread({ studentId, currentUserRole }: ChatThreadProps) {
                     {message.fileName ?? "Fayl"}
                   </a>
                 )}
+                {/* Timestamp */}
+                <p
+                  className={cn(
+                    "mt-1 text-[10px] leading-none",
+                    mine ? "text-white/60 text-right" : "text-gray-400"
+                  )}
+                >
+                  {formatMessageTime(message.createdAt)}
+                </p>
               </div>
+              {/* Read receipt — shown only after the last message sent by the current user */}
+              {showReceipt && (
+                <span className="mt-0.5 mr-1 text-[10px] text-gray-400">
+                  {message.read ? "Oxundu ✓✓" : "Göndərildi ✓"}
+                </span>
+              )}
             </div>
           );
         })}
         <div ref={endRef} />
       </div>
 
-      <div className="flex items-center gap-2 border-t border-gray-100 p-3">
+      <div className="flex items-center gap-2 border-t border-gray-200 p-3">
         <input ref={fileInputRef} type="file" className="hidden" accept=".pdf,.jpg,.jpeg,.png,.docx" onChange={handleFileUpload} />
         <button
           type="button"
@@ -158,9 +212,14 @@ export function ChatThread({ studentId, currentUserRole }: ChatThreadProps) {
         <button
           type="button"
           onClick={sendMessage}
-          disabled={sending || !text.trim()}
+          disabled={sending || !hasText}
           aria-label="Göndər"
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue text-white transition-colors disabled:opacity-50"
+          className={cn(
+            "flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors",
+            hasText
+              ? "bg-blue text-white hover:bg-blue/90"
+              : "bg-gray-100 text-gray-400 cursor-default"
+          )}
         >
           <Send size={18} />
         </button>

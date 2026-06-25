@@ -16,6 +16,10 @@ import {
   Menu,
   X,
   LucideIcon,
+  UserCog,
+  Building2,
+  BarChart3,
+  History,
 } from "lucide-react";
 import { cn } from "@/lib/cn";
 
@@ -64,10 +68,34 @@ const NAV_ITEMS: NavItem[] = [
     isActive: (pathname) => pathname === "/admin/leads",
   },
   {
+    href: "/admin/managers",
+    label: "Menecerlər",
+    icon: UserCog,
+    isActive: (pathname) => pathname === "/admin/managers",
+  },
+  {
+    href: "/admin/universities",
+    label: "Universitetlər",
+    icon: Building2,
+    isActive: (pathname) => pathname === "/admin/universities",
+  },
+  {
     href: "/admin/messages",
     label: "Mesaj qutusu",
     icon: Mail,
     isActive: (pathname) => pathname === "/admin/messages",
+  },
+  {
+    href: "/admin/analytics",
+    label: "Analitika",
+    icon: BarChart3,
+    isActive: (pathname) => pathname === "/admin/analytics",
+  },
+  {
+    href: "/admin/logs",
+    label: "Jurnal",
+    icon: History,
+    isActive: (pathname) => pathname === "/admin/logs",
   },
   {
     href: "/admin/settings",
@@ -141,10 +169,10 @@ export function MobileAdminNav() {
             onClick={() => setOpen(false)}
           />
           <aside
-            className="relative flex w-[240px] flex-col"
+            className="relative flex h-full w-[240px] flex-col overflow-hidden"
             style={{ background: "linear-gradient(180deg, #0e2454 0%, #091b43 100%)" }}
           >
-            <div className="flex items-center justify-between border-b border-white/10 px-4 py-[18px]">
+            <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-4 py-[18px]">
               <div className="flex items-center gap-3">
                 <Image
                   src="/logo.jpg"
@@ -167,8 +195,10 @@ export function MobileAdminNav() {
                 <X size={16} />
               </button>
             </div>
-            <SidebarNav onNavigate={() => setOpen(false)} />
-            <div className="mt-auto border-t border-white/10 px-4 py-3">
+            <div className="flex-1 overflow-y-auto">
+              <SidebarNav onNavigate={() => setOpen(false)} />
+            </div>
+            <div className="shrink-0 border-t border-white/10 px-4 py-3">
               <p className="text-[10px] text-white/25">v1.0 · Hope Academy</p>
             </div>
           </aside>

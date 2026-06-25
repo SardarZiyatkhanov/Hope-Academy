@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import {
   Target,
@@ -8,6 +10,11 @@ import {
   ArrowRight,
   MapPin,
 } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Haqqımızda",
+  description: "Hope Academy — 2015-ci ildən Azərbaycanlı tələbələrə Avropada təhsil almaq üçün etibarlı dəstək.",
+};
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Avatar } from "@/components/ui/Avatar";
@@ -124,12 +131,12 @@ export default function AboutPage() {
           <Reveal>
             <div className="group h-full overflow-hidden rounded-card bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg">
               <div className="relative h-44 overflow-hidden">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src="/images/about/team.jpg"
                   alt="Komanda"
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  loading="lazy"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent" />
               </div>
@@ -149,12 +156,12 @@ export default function AboutPage() {
           <Reveal delay={0.1}>
             <div className="group h-full overflow-hidden rounded-card bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg">
               <div className="relative h-44 overflow-hidden">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src="/images/about/graduation.jpg"
                   alt="Məzuniyyət"
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  loading="lazy"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent" />
               </div>
@@ -207,12 +214,12 @@ export default function AboutPage() {
 
       {/* Campus banner */}
       <section className="relative h-56 overflow-hidden sm:h-72">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src="/images/about/campus.jpg"
           alt="Universitet kampusu"
-          className="absolute inset-0 h-full w-full object-cover"
-          loading="lazy"
+          fill
+          sizes="100vw"
+          className="object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-navy/85 via-navy/60 to-transparent" />
         <Reveal className="relative z-10 mx-auto flex h-full max-w-7xl items-center px-4 sm:px-6 lg:px-8">

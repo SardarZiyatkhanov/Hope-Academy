@@ -21,7 +21,8 @@ const nextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' https://*.firebaseio.com https://*.googleapis.com",
+              "script-src 'self' 'unsafe-inline' https://*.firebaseio.com https://*.googleapis.com https://www.googletagmanager.com",
+              "worker-src 'self'",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com",
               "font-src 'self' https://fonts.gstatic.com",
               "img-src 'self' data: blob: https://*.googleapis.com https://*.googleusercontent.com https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://unpkg.com https://images.unsplash.com https://images.pexels.com",

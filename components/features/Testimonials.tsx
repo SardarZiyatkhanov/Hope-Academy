@@ -1,9 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { Quote, Star, ChevronLeft, ChevronRight } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Star, Quote } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
+import { Marquee } from "@/components/ui/Marquee";
 
 const TESTIMONIALS = [
   {
@@ -56,16 +55,71 @@ const TESTIMONIALS = [
       "Sənədlər, viza, yaşayış — hamısında kömək etdilər. Bakıdan Belçikaya keçid bu qədər rahat keçəcəyini gözləmirdim.",
     initials: "Sİ",
   },
+  {
+    name: "Elvin Həsənzadə",
+    university: "TU Wien",
+    city: "Vyana, Avstriya",
+    flag: "🇦🇹",
+    year: "2023",
+    quote:
+      "Mühəndislik proqramına qəbul prosesi mürəkkəb idi, amma Hope Academy hər detalla məşğul oldu. İndi Vyanada yaşayıram!",
+    initials: "EH",
+  },
+  {
+    name: "Günay Rzayeva",
+    university: "Sorbonne Université",
+    city: "Paris, Fransa",
+    flag: "🇫🇷",
+    year: "2024",
+    quote:
+      "Fransız dilini bilmirdim, amma hazırlıq proqramı ilə qəbul oldum. Hope Academy hər addımda dəstək oldu.",
+    initials: "GR",
+  },
+  {
+    name: "Orxan Babayev",
+    university: "University of Warsaw",
+    city: "Varşava, Polşa",
+    flag: "🇵🇱",
+    year: "2023",
+    quote:
+      "Polşada təhsil haqqında heç məlumatım yox idi. Hope Academy mənə tam yol xəritəsi verdi və hazırda magistr proqramındayam.",
+    initials: "OB",
+  },
 ];
 
+const ROW_1 = TESTIMONIALS.slice(0, 4);
+const ROW_2 = TESTIMONIALS.slice(4);
+
+function TestimonialCard({ t }: { t: (typeof TESTIMONIALS)[0] }) {
+  return (
+    <div aria-label={`${t.name} — ${t.university}`} className="flex w-[340px] shrink-0 flex-col gap-4 rounded-2xl bg-white/[0.06] p-6 ring-1 ring-white/[0.08] backdrop-blur-sm transition-colors hover:bg-white/[0.1] sm:w-[380px]">
+      <Quote className="text-gold/60" size={24} />
+      <p className="line-clamp-4 text-sm leading-relaxed text-white/80">
+        {t.quote}
+      </p>
+      <div className="mt-auto flex items-center justify-between gap-3 border-t border-white/[0.08] pt-4">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue to-navy text-xs font-semibold text-white ring-2 ring-white/10">
+            {t.initials}
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-white">{t.name}</p>
+            <p className="text-xs text-white/50">
+              {t.flag} {t.university}
+            </p>
+          </div>
+        </div>
+        <div className="flex gap-0.5" aria-label="5 ulduz reytinq">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Star key={i} size={11} className="fill-gold text-gold" />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function Testimonials() {
-  const [current, setCurrent] = useState(0);
-
-  const prev = () => setCurrent((c) => (c - 1 + TESTIMONIALS.length) % TESTIMONIALS.length);
-  const next = () => setCurrent((c) => (c + 1) % TESTIMONIALS.length);
-
-  const t = TESTIMONIALS[current];
-
   return (
     <section className="bg-navy py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -77,84 +131,19 @@ export function Testimonials() {
             Tələbələrimiz nə deyir?
           </h2>
         </Reveal>
+      </div>
 
-        <div className="mt-12 flex flex-col items-center gap-8">
-          {/* Main quote card */}
-          <div className="relative w-full max-w-3xl">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={current}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.4 }}
-                className="rounded-card bg-white/5 p-8 ring-1 ring-white/10 sm:p-12"
-              >
-                <Quote className="text-gold" size={32} />
-                <p className="mt-6 text-lg leading-relaxed text-white/90 sm:text-xl">
-                  {t.quote}
-                </p>
-
-                <div className="mt-8 flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-4">
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue to-navy text-sm font-semibold text-white ring-2 ring-white/20">
-                      {t.initials}
-                    </div>
-                    <div>
-                      <p className="font-semibold text-white">{t.name}</p>
-                      <p className="text-sm text-white/60">
-                        {t.flag} {t.university} · {t.city}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="hidden flex-col items-end gap-1 sm:flex">
-                    <div className="flex gap-0.5">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star key={i} size={14} className="fill-gold text-gold" />
-                      ))}
-                    </div>
-                    <p className="text-xs text-white/40">{t.year}</p>
-                  </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-
-          {/* Controls */}
-          <div className="flex items-center gap-4">
-            <button
-              type="button"
-              onClick={prev}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
-              aria-label="Əvvəlki"
-            >
-              <ChevronLeft size={20} />
-            </button>
-
-            <div className="flex gap-2">
-              {TESTIMONIALS.map((_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => setCurrent(i)}
-                  className={`h-2 rounded-full transition-all ${
-                    i === current ? "w-6 bg-gold" : "w-2 bg-white/30"
-                  }`}
-                  aria-label={`${i + 1}-ci rəy`}
-                />
-              ))}
-            </div>
-
-            <button
-              type="button"
-              onClick={next}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
-              aria-label="Növbəti"
-            >
-              <ChevronRight size={20} />
-            </button>
-          </div>
-        </div>
+      <div className="mt-12 flex flex-col gap-5">
+        <Marquee speed="slow" pauseOnHover>
+          {ROW_1.map((t) => (
+            <TestimonialCard key={t.name} t={t} />
+          ))}
+        </Marquee>
+        <Marquee speed="slow" pauseOnHover reverse>
+          {ROW_2.map((t) => (
+            <TestimonialCard key={t.name} t={t} />
+          ))}
+        </Marquee>
       </div>
     </section>
   );

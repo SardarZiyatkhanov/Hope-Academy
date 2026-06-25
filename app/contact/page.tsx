@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -5,6 +6,11 @@ import { ContactForm } from "@/components/features/ContactForm";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
 import { CONTACT } from "@/lib/constants";
+
+export const metadata: Metadata = {
+  title: "Əlaqə",
+  description: "Hope Academy ilə əlaqə saxlayın — ünvan, telefon, e-poçt və müraciət formu.",
+};
 
 const MAP_EMBED_URL =
   "https://www.openstreetmap.org/export/embed.html?bbox=49.8247%2C40.3665%2C49.8447%2C40.3785&layer=mapnik&marker=40.3725%2C49.8347";

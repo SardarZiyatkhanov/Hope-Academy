@@ -16,6 +16,7 @@ import { Avatar } from "@/components/ui/Avatar";
 import { cn } from "@/lib/cn";
 import { ApplicationDoc, ApplicationStatus, UserDoc } from "@/types";
 import { APPLICATION_STATUS_ORDER, STATUS_LABELS, getRouteForApplication } from "@/lib/constants";
+import { exportToCSV } from "@/lib/export-csv";
 import {
   SearchX,
   Clock,
@@ -26,6 +27,8 @@ import {
   BarChart3,
   TableProperties,
   ArrowUpRight,
+  Download,
+  Filter,
 } from "lucide-react";
 
 const STATUS_COLOR_HEX: Record<string, string> = {
@@ -108,6 +111,8 @@ export default function AdminDashboardPage() {
   const [applications, setApplications] = useState<ApplicationDoc[]>([]);
   const [students, setStudents] = useState<Record<string, UserDoc>>({});
   const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [countryFilter, setCountryFilter] = useState("");
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
 
@@ -162,13 +167,36 @@ export default function AdminDashboardPage() {
     [applications]
   );
 
+  const countries = useMemo(
+    () => Array.from(new Set(applications.map((a) => a.universityCountry).filter(Boolean))).sort(),
+    [applications]
+  );
+
   const filtered = useMemo(() => {
-    if (!search.trim()) return applications;
-    const term = search.trim().toLowerCase();
-    return applications.filter((a) =>
-      (students[a.studentId]?.name ?? "").toLowerCase().includes(term)
+    let list = applications;
+    if (statusFilter) list = list.filter((a) => a.status === statusFilter);
+    if (countryFilter) list = list.filter((a) => a.universityCountry === countryFilter);
+    if (search.trim()) {
+      const term = search.trim().toLowerCase();
+      list = list.filter((a) =>
+        (students[a.studentId]?.name ?? "").toLowerCase().includes(term)
+      );
+    }
+    return list;
+  }, [applications, students, search, statusFilter, countryFilter]);
+
+  const handleExport = () => {
+    exportToCSV(
+      filtered.map((a) => ({
+        Tələbə: students[a.studentId]?.name ?? "",
+        Universitet: a.universityName,
+        Ölkə: a.universityCountry,
+        Proqram: a.program,
+        Status: STATUS_LABELS[a.status].az,
+      })),
+      "erizeler"
     );
-  }, [applications, students, search]);
+  };
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const pageItems = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
@@ -182,8 +210,17 @@ export default function AdminDashboardPage() {
           <h1 className="text-xl font-bold text-navy">Ərizələr</h1>
           <p className="mt-0.5 text-sm text-gray-400">
             Cəmi <span className="font-semibold text-navy">{total}</span> ərizə
+            {filtered.length !== total && (
+              <span className="ml-1 text-blue-600">
+                ({filtered.length} göstərilir)
+              </span>
+            )}
           </p>
         </div>
+        <Button variant="ghost" onClick={handleExport} className="flex items-center gap-2">
+          <Download size={15} />
+          CSV
+        </Button>
       </div>
 
       {/* KPI Cards */}
@@ -279,15 +316,38 @@ export default function AdminDashboardPage() {
             </span>
             <h2 className="text-sm font-semibold text-navy">Bütün ərizələr</h2>
           </div>
-          <Input
-            placeholder="Tələbə adı ilə axtar..."
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setPage(1);
-            }}
-            className="max-w-xs"
-          />
+          <div className="flex flex-wrap items-center gap-3">
+            <Filter size={13} className="text-gray-400" />
+            <select
+              value={statusFilter}
+              onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
+              className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-navy outline-none focus:ring-2 focus:ring-accent"
+            >
+              <option value="">Bütün statuslar</option>
+              {APPLICATION_STATUS_ORDER.map((s) => (
+                <option key={s} value={s}>{STATUS_LABELS[s].az}</option>
+              ))}
+            </select>
+            <select
+              value={countryFilter}
+              onChange={(e) => { setCountryFilter(e.target.value); setPage(1); }}
+              className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-navy outline-none focus:ring-2 focus:ring-accent"
+            >
+              <option value="">Bütün ölkələr</option>
+              {countries.map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+            <Input
+              placeholder="Tələbə adı ilə axtar..."
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
+              className="max-w-[200px]"
+            />
+          </div>
         </div>
 
         <div className="overflow-x-auto">
@@ -339,6 +399,7 @@ export default function AdminDashboardPage() {
                           <AppStatusSelect
                             applicationId={application.id}
                             status={application.status}
+                            applicationName={`${studentName} — ${application.universityName}`}
                           />
                         </td>
                         <td className="px-4 py-3.5">

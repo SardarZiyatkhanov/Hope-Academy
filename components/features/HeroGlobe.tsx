@@ -179,9 +179,14 @@ export function HeroGlobe({ className }: { className?: string }) {
   }, [projection, bakuXY, routeData]);
 
   return (
-    <div className={`flex items-center justify-center overflow-hidden ${className ?? ""}`}>
+    <div
+      role="img"
+      aria-label="Bakıdan Avropa şəhərlərinə gedən tələbə marşrutlarını göstərən interaktiv xəritə"
+      className={`flex items-center justify-center overflow-hidden ${className ?? ""}`}
+    >
       <canvas
         ref={canvasRef}
+        aria-hidden="true"
         style={{ width: W, maxWidth: "100%", aspectRatio: `${W}/${H}` }}
         className=""
       />

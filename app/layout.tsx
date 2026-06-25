@@ -7,6 +7,7 @@ import { IntroAnimation } from "@/components/features/IntroAnimation";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { ScrollToTop } from "@/components/ui/ScrollToTop";
 import { SocialProofToast } from "@/components/features/SocialProofToast";
+import { ServiceWorkerRegistration } from "@/components/features/ServiceWorkerRegistration";
 import "./globals.css";
 
 const inter = Inter({
@@ -66,6 +67,7 @@ export default function RootLayout({
         <ScrollToTop />
         <IntroAnimation />
         <SocialProofToast />
+        <ServiceWorkerRegistration />
         <AuthProvider>
           <ToastProvider>
             <PageTransition>{children}</PageTransition>

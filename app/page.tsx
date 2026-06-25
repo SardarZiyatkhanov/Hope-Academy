@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import {
   FileSignature,
@@ -170,12 +171,12 @@ export default function Home() {
               <StaggerItem key={title}>
                 <MotionCard className="group h-full cursor-pointer overflow-hidden rounded-card border border-gray-100 bg-white shadow-sm">
                   <div className="relative h-36 w-full overflow-hidden">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    <Image
                       src={image}
                       alt={title}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      loading="lazy"
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-white via-white/30 to-transparent" />
                     <div
@@ -220,12 +221,12 @@ export default function Home() {
 
       {/* Inspirational banner */}
       <section className="relative h-64 overflow-hidden sm:h-80">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src="/images/students-banner.jpg"
           alt="Tələbələr"
-          className="absolute inset-0 h-full w-full object-cover"
-          loading="lazy"
+          fill
+          sizes="100vw"
+          className="object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-navy/90 via-navy/70 to-navy/40" />
         <div className="relative z-10 mx-auto flex h-full max-w-7xl items-center px-4 sm:px-6 lg:px-8">
