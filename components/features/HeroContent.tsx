@@ -57,7 +57,7 @@ export function HeroContent() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -16 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="inline-block bg-gradient-to-r from-gold via-yellow-300 to-gold bg-clip-text text-transparent"
+            className="inline-block pb-1 bg-gradient-to-r from-gold via-yellow-300 to-gold bg-clip-text text-transparent"
           >
             {DESTINATIONS[destIndex]}
           </motion.span>
