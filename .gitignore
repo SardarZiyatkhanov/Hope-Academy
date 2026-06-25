@@ -42,4 +42,5 @@ functions/firebase-debug.log
 
 # claude code
 .claude
+skills/
 .env*

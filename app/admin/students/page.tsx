@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { exportToCSV } from "@/lib/export-csv";
@@ -10,8 +11,8 @@ import { Avatar } from "@/components/ui/Avatar";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { TableSkeleton } from "@/components/ui/TableSkeleton";
 import { CreateStudentModal } from "@/components/features/CreateStudentModal";
-import { ApplicationDoc, UserDoc } from "@/types";
-import { STATUS_STEP } from "@/lib/constants";
+import { ApplicationDoc, DocumentDoc, UserDoc } from "@/types";
+import { STATUS_STEP, DOCUMENT_TYPE_LABELS } from "@/lib/constants";
 import {
   GraduationCap,
   Users,
@@ -20,18 +21,29 @@ import {
   Download,
   Search,
   Filter,
+  FileText,
+  ExternalLink,
 } from "lucide-react";
 
 export default function AdminStudentsPage() {
+  const searchParams = useSearchParams();
+  const view = searchParams.get("view");
+  const isDocumentsView = view === "documents";
+
   const [students, setStudents] = useState<UserDoc[]>([]);
   const [managers, setManagers] = useState<UserDoc[]>([]);
   const [applications, setApplications] = useState<ApplicationDoc[]>([]);
+  const [documents, setDocuments] = useState<DocumentDoc[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [docsLoading, setDocsLoading] = useState(true);
 
   // Filters
   const [search, setSearch] = useState("");
   const [managerFilter, setManagerFilter] = useState("");
+  const [docSearch, setDocSearch] = useState("");
+  const [docTypeFilter, setDocTypeFilter] = useState("");
+  const [docStudentFilter, setDocStudentFilter] = useState("");
 
   useEffect(() => {
     const q = query(collection(db, "users"), where("role", "==", "student"));
@@ -51,6 +63,13 @@ export default function AdminStudentsPage() {
   useEffect(() => {
     return onSnapshot(collection(db, "applications"), (snap) => {
       setApplications(snap.docs.map((d) => ({ id: d.id, ...d.data() } as ApplicationDoc)));
+    });
+  }, []);
+
+  useEffect(() => {
+    return onSnapshot(collection(db, "documents"), (snap) => {
+      setDocuments(snap.docs.map((d) => ({ id: d.id, ...d.data() } as DocumentDoc)));
+      setDocsLoading(false);
     });
   }, []);
 
@@ -86,6 +105,27 @@ export default function AdminStudentsPage() {
     return list;
   }, [students, search, managerFilter]);
 
+  const studentNames = useMemo(() => {
+    const map: Record<string, string> = {};
+    students.forEach((s) => { map[s.uid] = s.name; });
+    return map;
+  }, [students]);
+
+  const filteredDocs = useMemo(() => {
+    let list = documents;
+    if (docTypeFilter) list = list.filter((d) => d.type === docTypeFilter);
+    if (docStudentFilter) list = list.filter((d) => d.studentId === docStudentFilter);
+    if (docSearch.trim()) {
+      const term = docSearch.toLowerCase();
+      list = list.filter(
+        (d) =>
+          d.name.toLowerCase().includes(term) ||
+          (studentNames[d.studentId] ?? "").toLowerCase().includes(term)
+      );
+    }
+    return list;
+  }, [documents, docTypeFilter, docStudentFilter, docSearch, studentNames]);
+
   const handleExport = () => {
     exportToCSV(
       filtered.map((s) => ({
@@ -99,6 +139,158 @@ export default function AdminStudentsPage() {
       "telebeler"
     );
   };
+
+  const handleDocsExport = () => {
+    exportToCSV(
+      filteredDocs.map((d) => ({
+        Tələbə: studentNames[d.studentId] ?? d.studentId,
+        Sənəd: d.name,
+        Növ: DOCUMENT_TYPE_LABELS[d.type] ?? d.type,
+        Ölçü: `${(d.fileSize / 1024).toFixed(0)} KB`,
+      })),
+      "senedler"
+    );
+  };
+
+  if (isDocumentsView) {
+    return (
+      <div className="flex flex-col gap-7">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-xl font-bold text-navy">Sənədlər</h1>
+            <p className="mt-0.5 text-sm text-gray-400">
+              Cəmi <span className="font-semibold text-navy">{filteredDocs.length}</span> sənəd
+            </p>
+          </div>
+          <Button variant="ghost" onClick={handleDocsExport} className="flex items-center gap-2">
+            <Download size={15} />
+            CSV
+          </Button>
+        </div>
+
+        <section className="rounded-xl border border-gray-100 bg-white shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-100 px-5 py-4">
+            <div className="flex items-center gap-2">
+              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-navy/5">
+                <FileText size={14} className="text-navy" />
+              </span>
+              <h2 className="text-sm font-semibold text-navy">Bütün sənədlər</h2>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <Filter size={13} className="text-gray-400" />
+              <select
+                value={docStudentFilter}
+                onChange={(e) => setDocStudentFilter(e.target.value)}
+                className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-navy outline-none focus:ring-2 focus:ring-accent"
+              >
+                <option value="">Bütün tələbələr</option>
+                {students.map((s) => (
+                  <option key={s.uid} value={s.uid}>{s.name}</option>
+                ))}
+              </select>
+              <select
+                value={docTypeFilter}
+                onChange={(e) => setDocTypeFilter(e.target.value)}
+                className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-navy outline-none focus:ring-2 focus:ring-accent"
+              >
+                <option value="">Bütün növlər</option>
+                {(Object.entries(DOCUMENT_TYPE_LABELS) as [string, string][]).map(([key, label]) => (
+                  <option key={key} value={key}>{label}</option>
+                ))}
+              </select>
+              <div className="relative">
+                <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Sənəd adı, tələbə..."
+                  value={docSearch}
+                  onChange={(e) => setDocSearch(e.target.value)}
+                  className="rounded-lg border border-gray-200 bg-white py-2 pl-8 pr-3 text-xs text-navy outline-none focus:ring-2 focus:ring-accent"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-gray-50/70 text-left">
+                  <th className="px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Tələbə</th>
+                  <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Sənəd</th>
+                  <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Növ</th>
+                  <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Ölçü</th>
+                  <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Əməliyyat</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {docsLoading ? (
+                  <TableSkeleton cols={5} />
+                ) : (
+                  <>
+                    {filteredDocs.map((doc) => (
+                      <tr key={doc.id} className="group transition-colors hover:bg-blue-50/30">
+                        <td className="px-5 py-3.5">
+                          <div className="flex items-center gap-3">
+                            <Avatar
+                              name={studentNames[doc.studentId] ?? "?"}
+                              className="h-8 w-8 shrink-0 text-xs"
+                            />
+                            <Link
+                              href={`/admin/students/${doc.studentId}`}
+                              className="font-semibold text-navy hover:text-blue"
+                            >
+                              {studentNames[doc.studentId] ?? doc.studentId}
+                            </Link>
+                          </div>
+                        </td>
+                        <td className="max-w-[200px] px-4 py-3.5">
+                          <p className="truncate text-gray-700">{doc.name}</p>
+                        </td>
+                        <td className="px-4 py-3.5">
+                          <span className="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-[11px] font-medium text-blue-700">
+                            {DOCUMENT_TYPE_LABELS[doc.type] ?? doc.type}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3.5 text-gray-500 text-xs">
+                          {(doc.fileSize / 1024).toFixed(0)} KB
+                        </td>
+                        <td className="px-4 py-3.5">
+                          <a
+                            href={doc.fileUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            <Button
+                              variant="ghost"
+                              className="h-8 gap-1.5 px-3 text-xs font-medium text-blue-600 hover:bg-blue-50 hover:text-blue-700"
+                            >
+                              <ExternalLink size={13} />
+                              Aç
+                            </Button>
+                          </a>
+                        </td>
+                      </tr>
+                    ))}
+                    {filteredDocs.length === 0 && (
+                      <tr>
+                        <td colSpan={5} className="px-5 py-12">
+                          <EmptyState
+                            icon={FileText}
+                            title="Sənəd tapılmadı"
+                            description="Filtri dəyişdirin və ya tələbəyə sənəd yükləyin."
+                          />
+                        </td>
+                      </tr>
+                    )}
+                  </>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-7">
