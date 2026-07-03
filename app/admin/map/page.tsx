@@ -76,7 +76,7 @@ export default function AdminMapPage() {
           </span>
         </div>
         <div className="p-4">
-          <WorldMap routes={activeRoutes} height={520} />
+          <WorldMap routes={activeRoutes} height={520} animatePlanes />
         </div>
       </section>
     </div>

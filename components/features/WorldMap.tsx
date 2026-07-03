@@ -9,6 +9,7 @@ interface WorldMapProps {
   height?: number;
   className?: string;
   variant?: "dark" | "light";
+  animatePlanes?: boolean;
 }
 
 const LeafletMapInner = dynamic(() => import("./LeafletMapInner"), {
@@ -16,13 +17,19 @@ const LeafletMapInner = dynamic(() => import("./LeafletMapInner"), {
   loading: () => <Skeleton className="h-full w-full" />,
 });
 
-export function WorldMap({ routes, height = 300, className, variant = "light" }: WorldMapProps) {
+export function WorldMap({
+  routes,
+  height = 300,
+  className,
+  variant = "light",
+  animatePlanes = false,
+}: WorldMapProps) {
   return (
     <div
       style={{ height }}
       className={`relative w-full overflow-hidden rounded-xl ${className ?? ""}`}
     >
-      <LeafletMapInner routes={routes} variant={variant} />
+      <LeafletMapInner routes={routes} variant={variant} animatePlanes={animatePlanes} />
     </div>
   );
 }

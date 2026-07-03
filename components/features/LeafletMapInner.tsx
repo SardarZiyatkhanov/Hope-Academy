@@ -12,6 +12,10 @@ const PLANE_SVG_PATH =
 // The glyph's drawn nose points up-right (~-45deg in screen atan2-with-y-down
 // terms); rotation math below compensates by this constant.
 const PLANE_ICON_BASE_ANGLE = -45;
+// How far apart (in arc-fraction) to sample two points for the bearing.
+// Fixed and non-zero so bearing never degenerates into a zero vector,
+// including right at the start/end of the arc.
+const BEARING_SAMPLE_EPS = 0.03;
 
 function haversineKm(from: [number, number], to: [number, number]): number {
   const R = 6371;
@@ -27,61 +31,73 @@ function haversineKm(from: [number, number], to: [number, number]): number {
   return 2 * R * Math.asin(Math.sqrt(a));
 }
 
-// Position + travel bearing at fraction t (0-1) along a point array,
-// walking forward (dir=1) or backward (dir=-1).
-function sampleArc(pts: L.LatLngTuple[], t: number, dir: 1 | -1) {
+function easeInOutQuad(x: number): number {
+  return x < 0.5 ? 2 * x * x : 1 - ((-2 * x + 2) ** 2) / 2;
+}
+
+// Interpolated lat/lng at fraction t (0-1) along a point array.
+function positionAt(pts: L.LatLngTuple[], t: number): L.LatLngTuple {
   const lastIdx = pts.length - 1;
-  const idx = t * lastIdx;
+  const idx = Math.min(Math.max(t, 0), 1) * lastIdx;
   const i0 = Math.floor(idx);
   const i1 = Math.min(i0 + 1, lastIdx);
   const frac = idx - i0;
   const [lat0, lng0] = pts[i0];
   const [lat1, lng1] = pts[i1];
-  const lat = lat0 + (lat1 - lat0) * frac;
-  const lng = lng0 + (lng1 - lng0) * frac;
+  return [lat0 + (lat1 - lat0) * frac, lng0 + (lng1 - lng0) * frac];
+}
 
-  const dLng = lng1 - lng0;
-  const dLat = lat1 - lat0;
-  const travelAngle = (Math.atan2(-dLat, dLng) * 180) / Math.PI;
-  const rotation =
-    travelAngle - PLANE_ICON_BASE_ANGLE + (dir === -1 ? 180 : 0);
+// Position + travel bearing at fraction t (0-1) along a point array,
+// walking forward (dir=1) or backward (dir=-1). Bearing is sampled over a
+// fixed window around t rather than between adjacent array points, so it
+// stays well-defined (non-zero vector) even exactly at t=0 or t=1.
+function sampleArc(pts: L.LatLngTuple[], t: number, dir: 1 | -1) {
+  const latlng = positionAt(pts, t);
+  const ta = Math.max(0, t - BEARING_SAMPLE_EPS);
+  const tb = Math.min(1, t + BEARING_SAMPLE_EPS);
+  const [latA, lngA] = positionAt(pts, ta);
+  const [latB, lngB] = positionAt(pts, tb);
 
-  return { latlng: [lat, lng] as L.LatLngTuple, rotation };
+  const travelAngle = (Math.atan2(-(latB - latA), lngB - lngA) * 180) / Math.PI;
+  const rotation = travelAngle - PLANE_ICON_BASE_ANGLE + (dir === -1 ? 180 : 0);
+
+  return { latlng, rotation };
 }
 
 function makePlaneIcon(color: string) {
   return L.divIcon({
     className: "",
     html: `
-      <div class="plane-rotor" style="width:20px;height:20px;">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-          stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-          style="filter:drop-shadow(0 1px 3px rgba(0,0,0,0.35));">
-          <path d="${PLANE_SVG_PATH}"/>
+      <div class="plane-rotor" style="width:26px;height:26px;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+          style="display:block;filter:drop-shadow(0 1px 4px rgba(0,0,0,0.45));">
+          <path d="${PLANE_SVG_PATH}" fill="${color}" stroke="white" stroke-width="1.5"
+            stroke-linejoin="round"/>
         </svg>
       </div>
     `,
-    iconSize: [20, 20],
-    iconAnchor: [10, 10],
+    iconSize: [26, 26],
+    iconAnchor: [13, 13],
   });
 }
 
 interface PlaneState {
   marker: L.Marker;
+  rotor: HTMLElement | null;
   points: L.LatLngTuple[];
   flightMs: number;
   pauseMs: number;
   phaseOffsetMs: number;
 }
 
-// One flight cycle: fly out, pause, fly back, pause.
+// One flight cycle: ease out, pause, ease back, pause.
 function planePhase(elapsedMs: number, flightMs: number, pauseMs: number) {
   const cycle = 2 * flightMs + 2 * pauseMs;
   const t = ((elapsedMs % cycle) + cycle) % cycle;
-  if (t < flightMs) return { t: t / flightMs, dir: 1 as const };
+  if (t < flightMs) return { t: easeInOutQuad(t / flightMs), dir: 1 as const };
   if (t < flightMs + pauseMs) return { t: 1, dir: 1 as const };
   if (t < 2 * flightMs + pauseMs) {
-    const back = (t - flightMs - pauseMs) / flightMs;
+    const back = easeInOutQuad((t - flightMs - pauseMs) / flightMs);
     return { t: 1 - back, dir: -1 as const };
   }
   return { t: 0, dir: -1 as const };
@@ -108,18 +124,25 @@ function buildPlane(
     interactive: false,
     keyboard: false,
   }).addTo(map);
+  const rotor = marker.getElement()?.querySelector<HTMLElement>(".plane-rotor") ?? null;
 
-  return { marker, points: pts, flightMs, pauseMs: 800, phaseOffsetMs: index * 1500 };
+  return {
+    marker,
+    rotor,
+    points: pts,
+    flightMs,
+    pauseMs: 800,
+    phaseOffsetMs: index * 1500,
+  };
 }
 
 function renderPlaneFrame(plane: PlaneState, t: number, dir: 1 | -1) {
   const { latlng, rotation } = sampleArc(plane.points, t, dir);
   plane.marker.setLatLng(latlng);
-  const rotor = plane.marker.getElement()?.querySelector<HTMLElement>(".plane-rotor");
-  if (rotor) rotor.style.transform = `rotate(${rotation}deg)`;
+  if (plane.rotor) plane.rotor.style.transform = `rotate(${rotation}deg)`;
 }
 
-function animatePlanes(planes: PlaneState[], rafRef: { current: number | null }) {
+function startPlaneAnimation(planes: PlaneState[], rafRef: { current: number | null }) {
   if (planes.length === 0) return;
 
   if (prefersReducedMotion()) {
@@ -225,9 +248,14 @@ const TILES = {
 interface LeafletMapInnerProps {
   routes: WorldMapRoute[];
   variant?: "dark" | "light";
+  animatePlanes?: boolean;
 }
 
-export default function LeafletMapInner({ routes, variant = "light" }: LeafletMapInnerProps) {
+export default function LeafletMapInner({
+  routes,
+  variant = "light",
+  animatePlanes: animatePlanesEnabled = false,
+}: LeafletMapInnerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
   const rafRef = useRef<number | null>(null);
@@ -290,10 +318,10 @@ export default function LeafletMapInner({ routes, variant = "light" }: LeafletMa
         .addTo(map)
         .bindPopup(`<b>${route.label}</b>`);
 
-      planes.push(buildPlane(map, route, pts, theme.lineColor, index));
+      if (animatePlanesEnabled) planes.push(buildPlane(map, route, pts, theme.lineColor, index));
     });
 
-    animatePlanes(planes, rafRef);
+    if (animatePlanesEnabled) startPlaneAnimation(planes, rafRef);
 
     // Fit view to all points
     if (allPoints.length > 1) {
@@ -348,15 +376,15 @@ export default function LeafletMapInner({ routes, variant = "light" }: LeafletMa
         .addTo(map)
         .bindPopup(`<b>${route.label}</b>`);
 
-      planes.push(buildPlane(map, route, pts, theme.lineColor, index));
+      if (animatePlanesEnabled) planes.push(buildPlane(map, route, pts, theme.lineColor, index));
     });
 
-    animatePlanes(planes, rafRef);
+    if (animatePlanesEnabled) startPlaneAnimation(planes, rafRef);
 
     if (allPoints.length > 1) {
       map.fitBounds(L.latLngBounds(allPoints), { padding: [32, 32] });
     }
-  }, [routes, variant]);
+  }, [routes, variant, animatePlanesEnabled]);
 
   return <div ref={containerRef} className="h-full w-full" />;
 }
