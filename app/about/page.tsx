@@ -13,7 +13,7 @@ import {
 
 export const metadata: Metadata = {
   title: "Haqqımızda",
-  description: "Hope Academy — 2015-ci ildən Azərbaycanlı tələbələrə Avropada təhsil almaq üçün etibarlı dəstək.",
+  description: "Hope Academy — 2021-ci ildən Azərbaycanlı tələbələrə xaricdə təhsil almaq üçün etibarlı dəstək.",
 };
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -106,7 +106,7 @@ export default function AboutPage() {
       <PageHero
         badge="Haqqımızda"
         title="Bakıdan dünyaya açılan qapı"
-        description="Hope Academy 2015-ci ildən bəri Azərbaycanlı tələbələrə xaricdə təhsil almaq üçün universitet seçimindən tutmuş viza prosesinə qədər hər addımda dəstək göstərir."
+        description="Hope Academy 2021-ci ildən bəri Azərbaycanlı tələbələrə xaricdə təhsil almaq üçün universitet seçimindən tutmuş viza prosesinə qədər hər addımda dəstək göstərir."
       />
 
       {/* Stats */}
