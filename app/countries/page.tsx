@@ -10,7 +10,7 @@ import { CountryComparison } from "@/components/features/CountryComparison";
 
 export const metadata: Metadata = {
   title: "Ölkələr",
-  description: "Hope Academy ilə Avropanın 7 ölkəsindəki universitətlərə müraciət edin.",
+  description: "Hope Academy ilə dünyanın istənilən ölkəsindəki universitetlərə müraciət edin.",
 };
 
 export default function CountriesPage() {
@@ -21,7 +21,7 @@ export default function CountriesPage() {
       <PageHero
         badge="Ölkələr"
         title="Hansı ölkəni seçirsiniz?"
-        description="Almaniyadan Avstriyaya, Niderlanddan Çexiyaya — Hope Academy ilə 7 Avropa ölkəsindəki universitetlərə müraciət edə bilərsiniz."
+        description="Almaniyadan Avstriyaya, Niderlanddan Çexiyaya — və dünyanın istənilən digər ölkəsində, Hope Academy ilə istədiyiniz universitetə müraciət edə bilərsiniz."
       />
 
       <section className="bg-light py-16 sm:py-24">
