@@ -1,6 +1,10 @@
-import { onDocumentCreated } from "firebase-functions/v2/firestore";
+import { onDocumentCreated, onDocumentWritten } from "firebase-functions/v2/firestore";
 import { defineSecret } from "firebase-functions/params";
+import { initializeApp } from "firebase-admin/app";
+import { getAuth } from "firebase-admin/auth";
 import { Resend } from "resend";
+
+initializeApp();
 
 const resendApiKey = defineSecret("RESEND_API_KEY");
 
@@ -155,3 +159,18 @@ export const onNewStudent = onDocumentCreated(
     });
   },
 );
+
+// ─── Keep auth custom claims in sync with each user's Firestore role ───
+// Storage security rules check request.auth.token.role directly (no
+// cross-service Firestore read), so this claim must exist and stay current.
+export const syncUserRoleClaim = onDocumentWritten("users/{userId}", async (event) => {
+  const userId = event.params.userId;
+  const after = event.data?.after?.data();
+
+  if (!after) {
+    await getAuth().setCustomUserClaims(userId, null);
+    return;
+  }
+
+  await getAuth().setCustomUserClaims(userId, { role: after.role });
+});

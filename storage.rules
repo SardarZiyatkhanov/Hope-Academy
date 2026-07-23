@@ -7,9 +7,7 @@ service firebase.storage {
     }
 
     function isStaff() {
-      return isSignedIn() &&
-        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role
-          in ["manager", "superadmin"];
+      return isSignedIn() && request.auth.token.role in ["manager", "superadmin"];
     }
 
     function isAllowedType() {
