@@ -103,6 +103,22 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // collectionGroup("thread") queries (e.g. the staff notification bell's
+    // cross-student unread-message query) are NOT covered by the nested
+    // match above — Firestore requires a separate {path=**} wildcard rule
+    // for collection-group access. This is additive (OR'd with the rule
+    // above), so per-student access is unaffected.
+    match /{path=**}/thread/{messageId} {
+      allow read: if isStaff();
+    }
+
+    // --- Activity logs (staff audit trail) ---
+    match /activityLogs/{logId} {
+      allow read: if isStaff();
+      allow create: if isStaff();
+      allow update, delete: if false;
+    }
+
     // --- Deny everything else by default ---
     match /{document=**} {
       allow read, write: if false;

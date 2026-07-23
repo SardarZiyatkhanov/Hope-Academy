@@ -1,0 +1,20 @@
+[
+  {
+    "origin": [
+      "https://hopeacademy.az",
+      "https://www.hopeacademy.az",
+      "https://hope-academy-sardarziyatkhanovs-projects.vercel.app",
+      "https://hope-academy-git-main-sardarziyatkhanovs-projects.vercel.app",
+      "http://localhost:3000"
+    ],
+    "method": ["GET", "PUT", "POST", "HEAD"],
+    "maxAgeSeconds": 3600,
+    "responseHeader": [
+      "Content-Type",
+      "Content-Length",
+      "Content-Disposition",
+      "x-goog-resumable",
+      "x-goog-meta-*"
+    ]
+  }
+]
