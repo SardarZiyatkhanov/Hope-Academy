@@ -37,7 +37,7 @@ const CONTACT_INFO = [
   {
     icon: Clock,
     title: "İş saatları",
-    lines: ["B.e – Cümə: 09:00 – 18:00", "Şənbə: 10:00 – 14:00"],
+    lines: ["B.e – Şənbə: 11:00 – 20:00"],
     gradient: "from-navy to-blue",
   },
 ];

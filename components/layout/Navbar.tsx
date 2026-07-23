@@ -19,7 +19,7 @@ const RESOURCE_LINKS = [
   {
     href: "/countries",
     label: "Ölkələr",
-    desc: "7 Avropa ölkəsi",
+    desc: "Dünya üzrə tərəfdaş ölkələr",
     icon: Globe,
   },
   {
@@ -83,7 +83,7 @@ function ResourcesDropdown() {
     >
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => setOpen(true)}
         className={cn(
           "group flex flex-col items-center gap-0.5 px-3 py-2 text-sm font-medium transition-colors duration-200",
           isActive ? "text-white" : "text-white/60 hover:text-white"

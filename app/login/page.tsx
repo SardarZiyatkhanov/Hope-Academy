@@ -16,11 +16,8 @@ import { cn } from "@/lib/cn";
 const FIELD_CLASSES =
   "w-full rounded-[8px] border border-gray-200 bg-white py-2.5 pl-11 pr-4 text-sm text-navy placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-accent disabled:bg-gray-50 disabled:text-gray-400";
 
-function LoginForm() {
+function LoginForm({ isAdmin }: { isAdmin: boolean }) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const role = searchParams.get("role");
-  const isAdmin = role === "admin";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -78,7 +75,17 @@ function LoginForm() {
         </span>
       </div>
 
-      <div className="rounded-card border border-gray-100 bg-white p-8 shadow-xl shadow-navy/5 sm:p-10">
+      <div
+        className={cn(
+          "rounded-card border border-gray-100 bg-white p-8 shadow-xl shadow-navy/5 sm:p-10",
+          isAdmin && "border-t-4 border-t-navy"
+        )}
+      >
+        {isAdmin && (
+          <span className="mb-4 inline-flex w-fit items-center rounded-pill bg-navy/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-navy">
+            Menecer Paneli
+          </span>
+        )}
         <div
           className={cn(
             "mb-5 flex h-12 w-12 items-center justify-center rounded-full",
@@ -88,7 +95,9 @@ function LoginForm() {
           {isAdmin ? <ShieldCheck size={24} /> : <GraduationCap size={24} />}
         </div>
 
-        <h1 className="font-heading text-2xl font-bold text-navy">Xoş gəlmisiniz</h1>
+        <h1 className="font-heading text-2xl font-bold text-navy">
+          {isAdmin ? "Panelə xoş gəlmisiniz" : "Xoş gəlmisiniz"}
+        </h1>
         <p className="mt-1 text-sm text-gray-500">{subtitle}</p>
 
         <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4">
@@ -176,20 +185,38 @@ function LoginForm() {
   );
 }
 
-export default function LoginPage() {
+function LoginPageContent() {
+  const searchParams = useSearchParams();
+  const isAdmin = searchParams.get("role") === "admin";
+
   return (
     <main className="flex min-h-screen">
       <AuthBrandPanel
-        headline="Bakıdan bütün dünyaya təhsil səyahətiniz"
-        description="Universitet seçimi, sənədlərin hazırlanması, müraciət və viza prosesində etibarlı tərəfdaşınız."
+        badge={isAdmin ? "Menecer Paneli" : undefined}
+        headline={
+          isAdmin
+            ? "Hope Academy idarəetmə panelinə xoş gəlmisiniz"
+            : "Bakıdan bütün dünyaya təhsil səyahətiniz"
+        }
+        description={
+          isAdmin
+            ? "Tələbə ərizələrini idarə edin, sənədləri yoxlayın və prosesi izləyin."
+            : "Universitet seçimi, sənədlərin hazırlanması, müraciət və viza prosesində etibarlı tərəfdaşınız."
+        }
       />
 
       {/* Form panel */}
       <div className="flex w-full flex-col items-center justify-center bg-light p-4 py-12 lg:w-1/2 lg:bg-white">
-        <Suspense fallback={null}>
-          <LoginForm />
-        </Suspense>
+        <LoginForm isAdmin={isAdmin} />
       </div>
     </main>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginPageContent />
+    </Suspense>
   );
 }

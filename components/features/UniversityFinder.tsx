@@ -68,7 +68,7 @@ function getRecommendations(answers: Answers): Recommendation[] {
     });
   }
 
-  if (hasGoodEng && (budget === "low" || budget === "mid" || budget === "free")) {
+  if (hasGoodEng && (budget === "mid" || budget === "high")) {
     recs.push({
       flag: "🇳🇱", country: "Niderland", slug: "niderland",
       reason: "2.000+ İngilisdilli proqram, innovasiya mərkəzi",

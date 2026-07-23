@@ -15,8 +15,8 @@ const DESTINATIONS = [
 ];
 
 const STATS = [
-  { value: 1000, suffix: "+", label: "Tələbə" },
-  { value: 35, suffix: "+", label: "Universitet" },
+  { value: 2000, suffix: "+", label: "Tələbə" },
+  { value: 50, suffix: "+", label: "Universitet" },
   { value: 100, suffix: "%", label: "Şəffaflıq" },
 ];
 
@@ -43,12 +43,12 @@ export function HeroContent() {
           <span className="relative inline-flex h-2 w-2 rounded-full bg-green-400" />
         </span>
         <span className="text-xs font-medium text-white/90">
-          1000+ tələbə dünyada oxuyur
+          2000+ tələbə dünyada oxuyur
         </span>
       </div>
 
       <h1 className="font-heading text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">
-        Bakıdan bütün{" "}
+        Bakıdan{" "}
         <br className="hidden sm:block" />
         <AnimatePresence mode="wait" initial={false}>
           <motion.span

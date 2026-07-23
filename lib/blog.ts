@@ -19,10 +19,10 @@ export const BLOG_POSTS: BlogPost[] = [
     date: "2025-01-15",
     image: "/images/blog/study-abroad.jpg",
     content: [
-      { body: "Xaricdə oxumaq ideyası çoxumuzu həyəcanlandırır, lakin haradan başlayacağını bilməmək çox vaxt insanları duraksadır. Bu məqalədə prosesi 5 sadə addıma bölürük." },
+      { body: "Xaricdə oxumaq ideyası çoxumuzu həyəcanlandırır, lakin haradan başlayacağını bilməmək çox vaxt insanları tərəddüdə salır. Bu məqalədə prosesi 5 sadə addıma bölürük." },
       { heading: "1. Özünüzü tanıyın", body: "Hansı sahəni oxumaq istəyirsiniz? Mühəndislik, tibb, biznes, hüquq, incəsənət? Büdcəniz nədir? Dil bilikləriniz hansı səviyyədədir? Bu suallara cavab vermək doğru ölkə və universitetin seçimini dəfələrlə asanlaşdırır." },
       { heading: "2. Ölkə və universiteti seçin", body: "Hər ölkənin müraciət sistemi, dil tələbləri, yaşayış xərci fərqlidir. Almaniya pulsuz dövlət universitetləri ilə öndə gedir, Niderland İngilisdilli proqramların zənginliyi ilə seçilir, Çexiya isə yaşayış xərclərinin aşağılığı ilə cəlbedicidir." },
-      { heading: "3. Dil sertifikatını hazırlayın", body: "Əksər universitetlər IELTS, TOEFL, TestDaF, DSH, DELF kimi sertifikatlar tələb edir. Müraciət tarixindən ən azı 6-9 ay əvvəl sınava hazırlaşmağa başlayın." },
+      { heading: "3. Dil sertifikatını hazırlayın", body: "Əksər universitetlər IELTS, TOEFL, TestDaF, DSH, DELF kimi sertifikatlar tələb edir. Müraciət tarixindən ən azı 6-9 ay əvvəl imtahana hazırlaşmağa başlayın." },
       { heading: "4. Sənədlər paketini toplayın", body: "Diplom, transkript, motivasiya məktubu, tövsiyə məktubları, pasport surəti — universitetdən universitetə dəyişən sənəd tələbləri var. Hope Academy kimi məsləhətçilərdən kömək almaq bu mərhələdə ciddi vaxt qənaəti edir." },
       { heading: "5. Müraciəti göndərin və vizaya hazırlaşın", body: "Qəbul məktubunu aldıqdan sonra tələbə vizasına müraciət edirsiniz. Bu mərhələdə bank hesabı, sığorta, yaşayış yeri axtarışı paralel gedir. Hope Academy bu addımların hamısında sistematik dəstək verir." },
     ],

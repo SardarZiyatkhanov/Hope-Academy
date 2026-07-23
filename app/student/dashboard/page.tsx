@@ -237,7 +237,7 @@ export default function StudentDashboardPage() {
               <p className="text-sm font-semibold text-navy">Menecer ilə mesajlaşma</p>
             </div>
             <div className="flex-1 overflow-hidden">
-              <ChatThread studentId={user.uid} currentUserRole="student" />
+              <ChatThread studentId={user.uid} currentUserId={user.uid} currentUserRole="student" />
             </div>
           </section>
         </div>

@@ -26,9 +26,9 @@ import { MotionCard } from "@/components/ui/MotionCard";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 
 const STATS = [
-  { value: 1000, suffix: "+", label: "Uğurlu tələbə" },
-  { value: 35, suffix: "+", label: "Tərəfdaş universitet" },
-  { value: 12, suffix: "+", label: "Ölkə" },
+  { value: 2000, suffix: "+", label: "Uğurlu tələbə" },
+  { value: 50, suffix: "+", label: "Tərəfdaş universitet" },
+  { value: 35, suffix: "+", label: "Ölkə" },
   { value: 100, suffix: "%", label: "Şəffaf proses" },
 ];
 
@@ -309,7 +309,7 @@ export default function AboutPage() {
       <section className="bg-navy py-16">
         <Reveal className="mx-auto flex max-w-7xl flex-col items-center gap-6 px-4 text-center sm:px-6 lg:px-8">
           <h2 className="text-2xl font-semibold text-white sm:text-3xl">
-            Xaricdə təhsil yolculuğuna bu gün başla
+            Xaricdə təhsil səfərinə bu gün başla
           </h2>
           <p className="max-w-xl text-sm text-white/70 sm:text-base">
             Komandamızla əlaqə saxlayın, ya da birbaşa müraciət formunu doldurun —

@@ -13,7 +13,10 @@ import {
   ArrowRight,
   CheckCircle2,
   Globe2,
+  Languages,
+  Rocket,
 } from "lucide-react";
+import { COUNTRIES } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Xidmətlər",
@@ -32,13 +35,16 @@ const ICON_GRADIENTS = [
   "from-navy to-blue",
   "from-gold to-navy",
   "from-blue to-accent",
+  "from-accent to-navy",
+  "from-gold to-blue",
+  "from-navy to-accent",
 ];
 
 const SERVICES = [
   {
     icon: Compass,
-    title: "Universitet və proqram seçimi",
-    desc: "Maraqlarınıza, büdcənizə və akademik göstəricilərinizə uyğun universitet və proqramları birgə müəyyənləşdiririk.",
+    title: "Universitet, proqram və təqaüd seçimi",
+    desc: "Maraqlarınıza, büdcənizə və akademik göstəricilərinizə uyğun universitet, proqram və təqaüd imkanlarını birgə müəyyənləşdiririk.",
     featured: true,
   },
   {
@@ -71,6 +77,24 @@ const SERVICES = [
     desc: "Ünvana çatdıqdan sonra yaşayış yeri tapılması və ilk günlərdə yerləşmə üçün məsləhətlər.",
     featured: false,
   },
+  {
+    icon: Languages,
+    title: "İntensiv Dil Kursları",
+    desc: "Müraciət və viza üçün tələb olunan dil səviyyəsinə tez çatmaq üçün intensiv dil hazırlığı proqramları.",
+    featured: false,
+  },
+  {
+    icon: Rocket,
+    title: "İnkubasiya Mərkəzi",
+    desc: "Gənc sahibkarlar üçün ideyadan reallığa gedən yolda mentorluq və inkubasiya dəstəyi.",
+    featured: false,
+  },
+  {
+    icon: Globe2,
+    title: "Yerli & Beynəlxalq Layihələrin Təşkili",
+    desc: "Tələbə mübadilələri, təlimlər və layihələrin yerli və beynəlxalq səviyyədə təşkili.",
+    featured: false,
+  },
 ];
 
 const STEPS = [
@@ -79,16 +103,6 @@ const STEPS = [
   { icon: Send, title: "Universitetə göndəriş", desc: "Sənədləriniz seçdiyiniz universitetə göndərilir" },
   { icon: GraduationCap, title: "Qəbul", desc: "Universitetdən qəbul məktubunu alırsınız" },
   { icon: Plane, title: "Viza & Uçuş", desc: "Viza prosesi və yola düşmə dəstəyi" },
-];
-
-const COUNTRIES = [
-  "Almaniya",
-  "Niderland",
-  "Çexiya",
-  "Belçika",
-  "Fransa",
-  "Polşa",
-  "Avstriya",
 ];
 
 const INCLUDED = [
@@ -160,10 +174,10 @@ export default function ServicesPage() {
               Hope Academy
             </p>
             <h2 className="text-2xl font-bold text-white sm:text-3xl lg:text-4xl">
-              1000+ tələbənin etibarlı seçimi
+              2000+ tələbənin etibarlı seçimi
             </h2>
             <p className="max-w-lg text-sm text-white/70 sm:text-base">
-              Bakıdan Avropanın aparıcı universitetlərinə gedən yolda sizin yanınızdayıq.
+              Bakıdan dünyanın aparıcı universitetlərinə gedən yolda sizin yanınızdayıq.
             </p>
           </div>
         </section>
@@ -223,8 +237,8 @@ export default function ServicesPage() {
                   </h2>
                 </div>
                 <p className="mt-3 text-sm text-gray-500">
-                  Avropanın aparıcı universitetləri ilə tərəfdaşlıq edirik və daim yeni
-                  ölkələr əlavə edirik.
+                  Dünyanın istənilən ölkəsindəki aparıcı universitetlərlə tərəfdaşlıq
+                  edirik və daim yeni ölkələr əlavə edirik.
                 </p>
                 <div className="mt-6 flex flex-wrap gap-2">
                   {COUNTRIES.map((country) => (

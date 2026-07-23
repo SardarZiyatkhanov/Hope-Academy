@@ -74,6 +74,8 @@ export function DocumentList({
         uploadedAt: serverTimestamp(),
       });
       showToast("Sənəd uğurla yükləndi");
+    } catch {
+      showToast("Sənəd yüklənərkən xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.");
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";

@@ -15,6 +15,9 @@ import {
   Compass,
   FileCheck,
   Home as HomeIcon,
+  Languages,
+  Rocket,
+  Globe2,
 } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -44,7 +47,7 @@ const USP_ITEMS = [
 const STEPS = [
   { icon: <FileSignature size={22} />, title: "Müraciət", desc: "Formu doldurun, məsləhətçi sizinlə əlaqə saxlasın" },
   { icon: <FolderCheck size={22} />, title: "Sənədlər", desc: "Lazımi sənədləri toplayın və yükləyin" },
-  { icon: <Send size={22} />, title: "Universitetə göndəriş", desc: "Sənədləriniz seçdiyiniz universitetə göndərilir" },
+  { icon: <Send size={22} />, title: "Qeydiyyatların edilməsi", desc: "Sənədləriniz seçdiyiniz universitetə və təqaüdə göndərilir" },
   { icon: <GraduationCap size={22} />, title: "Qəbul", desc: "Universitetdən qəbul məktubunu alırsınız" },
   { icon: <Plane size={22} />, title: "Viza & Uçuş", desc: "Viza prosesi və yola düşmə dəstəyi" },
 ];
@@ -52,8 +55,8 @@ const STEPS = [
 const HOME_SERVICES = [
   {
     icon: Compass,
-    title: "Universitet seçimi",
-    desc: "Maraqlarınıza və büdcənizə uyğun ən doğru universitet və proqramı birlikdə müəyyənləşdiririk.",
+    title: "Universitet və təqaüd seçimi",
+    desc: "Maraqlarınıza və büdcənizə uyğun ən doğru universitet, proqram və təqaüd imkanlarını birlikdə müəyyənləşdiririk.",
     gradient: "from-blue to-navy",
     image: "/images/services/university.jpg",
   },
@@ -91,6 +94,27 @@ const HOME_SERVICES = [
     desc: "Yeni şəhərdə yaşayış yeri tapılması və məskunlaşma üçün praktiki məsləhətlər.",
     gradient: "from-blue to-accent",
     image: "/images/services/apartment.jpg",
+  },
+  {
+    icon: Languages,
+    title: "İntensiv Dil Kursları",
+    desc: "Müraciət və viza üçün tələb olunan dil səviyyəsinə tez çatmaq üçün intensiv dil hazırlığı.",
+    gradient: "from-accent to-navy",
+    image: "/images/services/laptop.jpg",
+  },
+  {
+    icon: Rocket,
+    title: "İnkubasiya Mərkəzi",
+    desc: "Gənc sahibkarlar üçün ideyadan reallığa gedən yolda mentorluq və inkubasiya dəstəyi.",
+    gradient: "from-gold to-blue",
+    image: "/images/services/university.jpg",
+  },
+  {
+    icon: Globe2,
+    title: "Yerli & Beynəlxalq Layihələrin Təşkili",
+    desc: "Tələbə mübadilələri, təlimlər və layihələrin yerli və beynəlxalq səviyyədə təşkili.",
+    gradient: "from-navy to-accent",
+    image: "/images/services/documents.jpg",
   },
 ];
 
@@ -232,7 +256,7 @@ export default function Home() {
         <div className="relative z-10 mx-auto flex h-full max-w-7xl items-center px-4 sm:px-6 lg:px-8">
           <Reveal>
             <p className="max-w-lg text-2xl font-bold leading-snug text-white sm:text-3xl">
-              1000+ tələbə artıq Avropanın ən yaxşı universitetlərində{" "}
+              2000+ tələbə artıq dünyanın ən yaxşı universitetlərində{" "}
               <span className="text-gold">oxuyur.</span>
             </p>
             <p className="mt-3 max-w-md text-sm text-white/70">
@@ -253,7 +277,7 @@ export default function Home() {
             Müraciət
           </span>
           <h2 className="mt-3 text-3xl font-bold text-white sm:text-4xl">
-            Xaricdə təhsil yolculuğuna{" "}
+            Xaricdə təhsil səfərinə{" "}
             <span className="bg-gradient-to-r from-gold via-yellow-300 to-gold bg-clip-text text-transparent">
               bu gün başla
             </span>

@@ -213,7 +213,7 @@ export default function StudentDetailPage({ params }: { params: { id: string } }
 
       {activeTab === "Mesajlar" && (
         <div className="flex h-[520px] flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
-          <ChatThread studentId={studentId} currentUserRole="manager" />
+          <ChatThread studentId={studentId} currentUserId={user?.uid ?? ""} currentUserRole="manager" />
         </div>
       )}
 

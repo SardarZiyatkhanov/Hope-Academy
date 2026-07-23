@@ -16,6 +16,12 @@ const COUNTRIES = [
   "Fransa",
   "Polşa",
   "Avstriya",
+  "ABŞ",
+  "Kanada",
+  "Çin",
+  "Avropa (ümumi)",
+  "Şimali Amerika (ümumi)",
+  "Asiya (ümumi)",
   "Digər",
 ];
 

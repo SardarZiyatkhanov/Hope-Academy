@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import { HeroGlobe } from "./HeroGlobe";
 
 const CITIES = ["Berlin", "Amsterdam", "Paris", "Prague", "Vienna", "London"];
 const BRAND = "HOPE ACADEMY";
@@ -118,6 +119,10 @@ export function IntroAnimation() {
           transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
         >
           <StarCanvas />
+
+          <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-30">
+            <HeroGlobe className="h-[130%] w-[130%] max-w-none" />
+          </div>
 
           <div className="pointer-events-none absolute top-1/4 left-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue/20 blur-[150px]" />
           <div className="pointer-events-none absolute bottom-0 right-1/4 h-[300px] w-[300px] rounded-full bg-gold/10 blur-[100px]" />

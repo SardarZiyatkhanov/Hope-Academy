@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { useAuth } from "@/lib/auth-context";
 import { Avatar } from "@/components/ui/Avatar";
 import { ChatThread } from "@/components/features/ChatThread";
 import { cn } from "@/lib/cn";
@@ -62,6 +63,7 @@ function ChatListItem({
 }
 
 export default function AdminChatPage() {
+  const { user } = useAuth();
   const [students, setStudents] = useState<UserDoc[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
@@ -145,7 +147,7 @@ export default function AdminChatPage() {
                 </div>
               )}
               <div className="flex-1 overflow-hidden">
-                <ChatThread studentId={activeId} currentUserRole="manager" />
+                <ChatThread studentId={activeId} currentUserId={user?.uid ?? ""} currentUserRole="manager" />
               </div>
             </>
           ) : (

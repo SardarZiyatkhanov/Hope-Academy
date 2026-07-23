@@ -2,12 +2,12 @@ import { ApplicationDoc, ApplicationStatus, DocumentType, LeadLevel, LeadStatus 
 
 // ─── Contact info (update once, used everywhere) ───
 export const CONTACT = {
-  phone: "+994 51 940 43 03",
-  phoneRaw: "+994519404303",
+  phone: "+994 70 940 43 03",
+  phoneRaw: "+994709404303",
   email: "info@hopeacademy.az",
-  address: "Nizami küçəsi 203",
+  address: "Nizami küçəsi 86",
   city: "Bakı, Azərbaycan",
-  whatsapp: "994519404303",
+  whatsapp: "994709404303",
 } as const;
 
 export const NAV_LINKS = [
@@ -130,6 +130,7 @@ export const COUNTRIES = [
   "Macarıstan",
   "Kanada",
   "ABŞ",
+  "Çin",
   "Digər",
 ];
 
@@ -158,6 +159,9 @@ export const DEFAULT_WORLD_ROUTES: WorldMapRoute[] = [
   { to: [31.2, 30.0], label: "Cairo", progress: 0.85 },
   { to: [-74.0, 40.7], label: "New York", progress: 0.2 },
   { to: [-79.4, 43.7], label: "Toronto", progress: 0.7 },
+  { to: [126.98, 37.57], label: "Seoul", progress: 0.35 },
+  { to: [116.4, 39.9], label: "Beijing", progress: 0.6 },
+  { to: [103.8, 1.35], label: "Singapore", progress: 0.45 },
 ];
 
 // City coordinates [lng, lat], used to draw routes for applications

@@ -15,6 +15,7 @@ import { MessageSquare, Paperclip, Send } from "lucide-react";
 import { db, storage } from "@/lib/firebase";
 import { MessageDoc } from "@/types";
 import { cn } from "@/lib/cn";
+import { useToast } from "@/components/ui/Toast";
 
 const ALLOWED_TYPES = new Set([
   "application/pdf",
@@ -48,15 +49,17 @@ function formatMessageTime(timestamp: Timestamp | null | undefined): string {
 
 interface ChatThreadProps {
   studentId: string;
+  currentUserId: string;
   currentUserRole: "student" | "manager";
 }
 
-export function ChatThread({ studentId, currentUserRole }: ChatThreadProps) {
+export function ChatThread({ studentId, currentUserId, currentUserRole }: ChatThreadProps) {
   const [messages, setMessages] = useState<MessageDoc[]>([]);
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { showToast } = useToast();
 
   useEffect(() => {
     const threadQuery = query(
@@ -79,15 +82,20 @@ export function ChatThread({ studentId, currentUserRole }: ChatThreadProps) {
     const trimmed = text.trim();
     if (!trimmed) return;
     setSending(true);
-    await addDoc(collection(db, "messages", studentId, "thread"), {
-      senderId: studentId,
-      senderRole: currentUserRole,
-      text: trimmed,
-      createdAt: serverTimestamp(),
-      read: false,
-    });
-    setText("");
-    setSending(false);
+    try {
+      await addDoc(collection(db, "messages", studentId, "thread"), {
+        senderId: currentUserId,
+        senderRole: currentUserRole,
+        text: trimmed,
+        createdAt: serverTimestamp(),
+        read: false,
+      });
+      setText("");
+    } catch {
+      showToast("Mesaj göndərilərkən xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.");
+    } finally {
+      setSending(false);
+    }
   };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,10 +103,12 @@ export function ChatThread({ studentId, currentUserRole }: ChatThreadProps) {
     if (!file) return;
 
     if (!ALLOWED_TYPES.has(file.type)) {
+      showToast("Yalnız PDF, JPG, PNG və DOCX formatları dəstəklənir");
       if (fileInputRef.current) fileInputRef.current.value = "";
       return;
     }
     if (file.size > MAX_FILE_SIZE) {
+      showToast("Fayl ölçüsü 10MB-dan çox ola bilməz");
       if (fileInputRef.current) fileInputRef.current.value = "";
       return;
     }
@@ -111,13 +121,15 @@ export function ChatThread({ studentId, currentUserRole }: ChatThreadProps) {
       const fileUrl = await getDownloadURL(storageRef);
 
       await addDoc(collection(db, "messages", studentId, "thread"), {
-        senderId: studentId,
+        senderId: currentUserId,
         senderRole: currentUserRole,
         fileUrl,
         fileName: file.name,
         createdAt: serverTimestamp(),
         read: false,
       });
+    } catch {
+      showToast("Fayl yüklənərkən xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.");
     } finally {
       setSending(false);
       if (fileInputRef.current) fileInputRef.current.value = "";

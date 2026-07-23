@@ -3,17 +3,18 @@ import Image from "next/image";
 import { CheckCircle2 } from "lucide-react";
 
 const FEATURES = [
-  "1000+ tələbəyə uğurla dəstək",
-  "35+ tərəfdaş universitet",
+  "2000+ tələbəyə uğurla dəstək",
+  "50+ tərəfdaş universitet",
   "100% şəffaf onlayn izləmə paneli",
 ];
 
 interface AuthBrandPanelProps {
   headline: string;
   description: string;
+  badge?: string;
 }
 
-export function AuthBrandPanel({ headline, description }: AuthBrandPanelProps) {
+export function AuthBrandPanel({ headline, description, badge }: AuthBrandPanelProps) {
   return (
     <div className="relative hidden w-1/2 flex-col justify-between overflow-hidden bg-navy p-12 lg:flex">
       <video
@@ -47,6 +48,11 @@ export function AuthBrandPanel({ headline, description }: AuthBrandPanelProps) {
       </Link>
 
       <div className="relative z-10">
+        {badge && (
+          <span className="mb-3 inline-flex w-fit items-center rounded-pill bg-gold/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-gold ring-1 ring-gold/30">
+            {badge}
+          </span>
+        )}
         <h2 className="font-heading max-w-md text-4xl font-bold leading-tight text-white">
           {headline}
         </h2>
